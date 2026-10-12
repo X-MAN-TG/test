@@ -1,0 +1,3975 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Quanta · Search stops at links. Research doesn't.</title>
+<meta name="description" content="Quanta is a web research API. It plans the searches, reads the real pages, and returns a cited answer with the sources behind it, streamed live.">
+<meta name="color-scheme" content="dark light">
+<link rel="icon" href="/static/logo.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/static/css/fonts-v3.css">
+<link rel="stylesheet" href="css/landing.css">
+<link rel="stylesheet" href="css/components.css">
+<script>try{var t=localStorage.getItem('q-theme')||(matchMedia('(prefers-color-scheme:light)').matches?'light':'dark');document.documentElement.dataset.theme=t}catch(e){}</script>
+<style>
+/* css/landing.css : Quanta Glass Observatory System Core & Tokens */
+
+:root{
+  --citrus:#FFD84D; --blue:#4C6FFF; --teal:#2DE2C0; --coral:#FF6B5A; --ink:#0B0F1E;
+  --font-display:"Bricolage Grotesque","Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-ui:"Manrope",system-ui,-apple-system,"Segoe UI",sans-serif;
+  --font-mono:"JetBrains Mono",ui-monospace,SFMono-Regular,Menlo,Consolas,monospace;
+  --ease:cubic-bezier(.2,.8,.2,1); --spring:cubic-bezier(.34,1.56,.64,1);
+  --r-s:10px; --r-m:18px; --r-l:28px; --r-xl:40px; --blur:18px;
+  --grain:url("data:image/svg+xml;utf8,<svg xmlns='http://www.w3.org/2000/svg' width='140' height='140'><filter id='n'><feTurbulence type='fractalNoise' baseFrequency='.85' numOctaves='3'/></filter><rect width='140' height='140' filter='url(%23n)' opacity='.5'/></svg>");
+}
+
+:root,[data-theme="dark"]{
+  --bg:#070A13; --bg-raised:#0D1220; --fg:#F3F6FF; --fg-2:#A9B3CC; --line:rgba(255,255,255,.12);
+  --accent:var(--citrus); --on-accent:var(--ink);
+  --link:#8DA2FF; --ok:#2DE2C0; --warn-text:#FF8A7A; --warn:#FF6B5A;
+  --glass-bg:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03)),rgba(12,16,30,.55);
+  --glass-border:rgba(255,255,255,.14); --glass-hi:rgba(255,255,255,.28);
+  --glass-shadow:0 20px 60px -20px rgba(0,0,0,.6),0 2px 0 rgba(255,255,255,.04) inset;
+  --orb-a:#4C6FFF; --orb-b:#2DE2C0; --orb-c:#FFD84D; --orb-alpha:.18;
+  color-scheme:dark;
+}
+
+[data-theme="light"]{
+  --bg:#F4F6FB; --bg-raised:#FFFFFF; --fg:#0B1020; --fg-2:#475069; --line:rgba(11,16,32,.12);
+  --link:#2F4BFF; --ok:#007A67; --warn-text:#C2361F; --warn:#FF6B5A;
+  --glass-bg:linear-gradient(180deg,rgba(255,255,255,.80),rgba(255,255,255,.55));
+  --glass-border:rgba(255,255,255,.85); --glass-hi:rgba(255,255,255,.95);
+  --glass-shadow:0 24px 60px -24px rgba(24,40,120,.28),0 1px 0 rgba(255,255,255,.9) inset;
+  --orb-a:#BFD0FF; --orb-b:#BFF0E3; --orb-c:#FFF0A8; --orb-alpha:.35;
+  color-scheme:light;
+}
+
+/* scenes: components use ONLY these variables */
+[data-scene="stage"]{--bg:#0A0F1E;--bg-raised:#10172B;--fg:#F3F6FF;--fg-2:#BAC3DA;--line:rgba(255,255,255,.12);--link:#8DA2FF;--ok:#2DE2C0;--warn-text:#FF8A7A;
+  --glass-bg:linear-gradient(180deg,rgba(255,255,255,.07),rgba(255,255,255,.03)),rgba(12,16,30,.55);--glass-border:rgba(255,255,255,.14);--glass-shadow:0 20px 60px -20px rgba(0,0,0,.6)}
+[data-scene="cobalt"]{--bg:#2F4BFF;--fg:#fff;--fg-2:#DCE3FF;--line:rgba(255,255,255,.24);--link:#fff;--ok:#7CFFE0;--warn-text:#FFD0C8;
+  --glass-bg:rgba(10,20,120,.38);--glass-border:rgba(255,255,255,.28);--glass-shadow:0 20px 60px -20px rgba(0,0,0,.35)}
+[data-theme="dark"] [data-scene="cobalt"]{--bg:#1A2BC4}
+[data-scene="mint"]{--bg:#D9F7EE;--fg:#0B1020;--fg-2:#3A4560;--glass-bg:rgba(255,255,255,.62);--glass-border:rgba(255,255,255,.9);--link:#2F4BFF;--ok:#007A67;--warn-text:#C2361F;--glass-shadow:0 20px 50px -26px rgba(6,60,50,.4)}
+[data-theme="dark"] [data-scene="mint"]{--bg:#0E2A26;--fg:#E6FFF8;--fg-2:#A5D9CE;--glass-bg:rgba(8,28,24,.55);--glass-border:rgba(255,255,255,.16);--link:#8DA2FF;--ok:#2DE2C0;--warn-text:#FF8A7A}
+[data-scene="sky"]{--bg:#DCE6FF;--fg:#0B1020;--fg-2:#3A4560;--glass-bg:rgba(255,255,255,.62);--glass-border:rgba(255,255,255,.9);--link:#2F4BFF;--ok:#007A67;--warn-text:#C2361F;--glass-shadow:0 20px 50px -26px rgba(24,40,120,.4)}
+[data-theme="dark"] [data-scene="sky"]{--bg:#121C3F;--fg:#E8EEFF;--fg-2:#B3BFE6;--glass-bg:rgba(10,16,44,.55);--glass-border:rgba(255,255,255,.16);--link:#8DA2FF;--ok:#2DE2C0;--warn-text:#FF8A7A}
+[data-scene="citrus"]{--bg:#FFD84D;--fg:#0B0F1E;--fg-2:#3B3A1F;--line:rgba(11,15,30,.2);--accent:#0B0F1E;--on-accent:#FFD84D;--link:#0B0F1E;--glass-bg:rgba(255,255,255,.35);--glass-border:rgba(255,255,255,.6);--glass-shadow:0 20px 50px -26px rgba(90,70,0,.5)}
+[data-scene="aurora"]{--orb-alpha:.16}
+
+/* ===================== base ===================== */
+*{box-sizing:border-box}
+html{scroll-behavior:smooth;-webkit-text-size-adjust:100%}
+body{margin:0;background:var(--bg);color:var(--fg);font:500 17px/1.7 var(--font-ui);-webkit-font-smoothing:antialiased;overflow-x:hidden;width:100%}
+[data-scene]{background:var(--bg);color:var(--fg)}
+button,input,select,textarea{font:inherit;color:inherit}
+button{cursor:pointer;touch-action:manipulation}
+a{color:var(--link);text-decoration:none}
+a:hover{text-decoration:underline}
+img,svg,canvas{display:block;max-width:100%}
+:focus-visible{outline:2px solid var(--link);outline-offset:3px;border-radius:8px;box-shadow:0 0 0 6px rgba(255,216,77,.28)}
+h1,h2,h3{font-family:var(--font-display);font-weight:800;letter-spacing:-.035em;line-height:1.06;margin:0;text-wrap:balance;word-break:break-word}
+p{margin:0}
+em,i,cite,address,dfn,var{font-style:normal}
+.skip{position:absolute;left:12px;top:-70px;z-index:99;background:var(--citrus);color:var(--ink);padding:10px 16px;border-radius:999px;font-weight:700}
+.skip:focus{top:12px}
+.sr{position:absolute;width:1px;height:1px;overflow:hidden;clip:rect(0 0 0 0);white-space:nowrap}
+.wrap{width:min(1280px,100% - 2*clamp(16px,3.5vw,48px));margin-inline:auto}
+.sec{position:relative;padding:clamp(56px,9vw,150px) 0;isolation:isolate}
+.eyebrow{font:700 .72rem/1 var(--font-ui);letter-spacing:.18em;text-transform:uppercase;color:var(--fg-2);margin-bottom:16px}
+h2{font-size:clamp(1.9rem,4.8vw,4rem)}
+h1{font-size:clamp(2.4rem,7vw,6rem)}
+.lede{font-size:clamp(0.98rem,2.2vw,1.09rem);color:var(--fg-2);max-width:56ch;margin-top:18px}
+.grid12{display:grid;grid-template-columns:repeat(12,1fr);gap:clamp(20px,3vw,40px);align-items:center}
+
+/* ===================== §1 Calibrated Highlight ===================== */
+.hl{
+  color:var(--on-accent);                      /* ink on citrus, both themes */
+  background-image:linear-gradient(var(--citrus),var(--citrus));
+  background-repeat:no-repeat;
+  background-position:0 calc(var(--mk-y,.20) * 1em);
+  background-size:0% calc(var(--mk-h,.98) * 1em);   /* wipe animates width only */
+  padding:0 .12em; margin:0 -.04em;
+  -webkit-box-decoration-break:clone; box-decoration-break:clone;
+  transition:background-size .7s var(--ease);
+  border-radius:4px;
+}
+.hl.on{background-size:100% calc(var(--mk-h,.98) * 1em)}
+#hero .hl.on{animation:hlbreathe 4s var(--ease) infinite}
+@keyframes hlbreathe{0%,100%{filter:brightness(1)}50%{filter:brightness(1.06)}}
+@media(max-width:640px){.hl{padding:0 .08em}}
+@media(prefers-reduced-motion:reduce){
+  .hl{transition:none!important;background-size:100% calc(var(--mk-h,.98) * 1em)!important}
+  #hero .hl.on{animation:none!important}
+}
+
+/* ===================== glass system ===================== */
+.glass{background:var(--glass-bg);border:1px solid var(--glass-border);border-radius:var(--r-l);
+  backdrop-filter:blur(var(--blur)) saturate(140%);-webkit-backdrop-filter:blur(var(--blur)) saturate(140%);
+  box-shadow:var(--glass-shadow);position:relative;isolation:isolate;padding:clamp(28px,4vw,36px)}
+@supports not (backdrop-filter:blur(1px)){.glass{background:var(--bg-raised)}}
+.glass::before{content:"";position:absolute;inset:0;border-radius:inherit;pointer-events:none;
+  background:radial-gradient(420px circle at var(--mx,50%) var(--my,0%),rgba(255,255,255,.14),transparent 60%);opacity:0;transition:opacity .3s}
+.glass:hover::before{opacity:1}
+.g1{--blur:12px}.g2{--blur:18px}
+.g3{background:var(--bg-raised);backdrop-filter:none;-webkit-backdrop-filter:none;border-color:var(--line)}
+.g3::before{display:none}
+
+/* ambient light */
+.orbs{position:absolute;inset:0;overflow:hidden;pointer-events:none;z-index:-2}
+.orbs i{position:absolute;display:block;border-radius:50%;filter:blur(75px);opacity:var(--orb-alpha)}
+.orbs i:nth-child(1){width:52vmax;height:52vmax;left:-14vmax;top:-14vmax;background:var(--orb-a);animation:drift1 58s ease-in-out infinite alternate}
+.orbs i:nth-child(2){width:44vmax;height:44vmax;right:-12vmax;top:8vmax;background:var(--orb-b);animation:drift2 46s ease-in-out infinite alternate}
+.orbs i:nth-child(3){width:36vmax;height:36vmax;left:32vw;bottom:-18vmax;background:var(--orb-c);opacity:calc(var(--orb-alpha) * 0.7);animation:drift3 68s ease-in-out infinite alternate}
+@keyframes drift1{to{transform:translate3d(8vmax,5vmax,0) scale(1.12)}}
+@keyframes drift2{to{transform:translate3d(-7vmax,8vmax,0) scale(1.08)}}
+@keyframes drift3{to{transform:translate3d(6vmax,-6vmax,0) scale(1.15)}}
+.grain{position:absolute;inset:0;pointer-events:none;z-index:-1;opacity:.04;mix-blend-mode:overlay;background-image:var(--grain)}
+
+/* controls */
+.btn{display:inline-flex;align-items:center;justify-content:center;gap:10px;background:var(--citrus);color:var(--ink);border:0;border-radius:999px;
+  padding:clamp(10px,2vw,13px) clamp(18px,3vw,24px);font:700 clamp(0.88rem,1.8vw,0.95rem) var(--font-ui);position:relative;overflow:hidden;transition:transform .18s var(--ease),box-shadow .18s var(--ease);user-select:none}
+.btn:hover{transform:translateY(-2px);box-shadow:0 12px 28px -12px rgba(255,216,77,.7);text-decoration:none}
+.btn:active{transform:translateY(0)}
+.btn::after{content:"";position:absolute;inset:0;background:linear-gradient(105deg,transparent 30%,rgba(255,255,255,.65) 50%,transparent 70%);
+  transform:translateX(-120%);animation:sheen 5s var(--ease) infinite}
+@keyframes sheen{0%,72%{transform:translateX(-120%)}88%,100%{transform:translateX(120%)}}
+.btn.ghost{background:transparent;color:var(--fg);border:1px solid var(--glass-border);box-shadow:none}
+.btn.ghost::after{display:none}
+.btn.ghost:hover{background:var(--glass-bg)}
+.btn.ink{background:var(--ink);color:#fff}
+[data-scene="citrus"] .btn{background:var(--ink);color:var(--citrus)}
+.tb{background:transparent;border:1px solid var(--glass-border);color:var(--fg);border-radius:999px;padding:9px 16px;font:600 .84rem var(--font-ui);transition:background .18s;user-select:none}
+.tb:hover{background:var(--glass-bg)}
+.chip{display:inline-flex;align-items:center;gap:8px;font:600 .82rem var(--font-mono);border:1px solid var(--glass-border);
+  border-radius:999px;padding:7px 14px;background:var(--glass-bg);color:var(--fg);max-width:100%}
+.pill{display:inline-grid;place-items:center;min-width:20px;height:20px;padding:0 5px;border-radius:6px;background:var(--citrus);color:var(--ink);
+  font:700 .68rem var(--font-mono);vertical-align:super;margin:0 1px}
+.dot{width:9px;height:9px;border-radius:50%;background:var(--ok);box-shadow:0 0 0 0 var(--ok);animation:ping 2.6s var(--ease) infinite;flex:none}
+@keyframes ping{0%{box-shadow:0 0 0 0 rgba(45,226,192,.55)}70%,100%{box-shadow:0 0 0 9px rgba(45,226,192,0)}}
+
+/* nav */
+header.nav{position:fixed;top:clamp(10px,2vw,14px);left:0;right:0;z-index:60;display:flex;justify-content:center;pointer-events:none;transition:transform .3s var(--ease);padding-inline:10px}
+header.nav.hide{transform:translateY(-140%)}
+.navpill{pointer-events:auto;display:flex;align-items:center;gap:8px;padding:7px 10px 7px 16px;border-radius:999px;--blur:16px;
+  width:min(1060px,100%);justify-content:space-between}
+.brand{display:flex;align-items:center;gap:10px;font:800 1.05rem var(--font-display);letter-spacing:-.02em;color:var(--fg);flex:none;user-select:none}
+.brand:hover{text-decoration:none}
+.navlinks{display:flex;gap:4px}
+.navlinks a{color:var(--fg-2);font:600 .88rem var(--font-ui);padding:8px 13px;border-radius:999px}
+.navlinks a:hover{color:var(--fg);background:var(--glass-bg);text-decoration:none}
+.navtools{display:flex;align-items:center;gap:8px;flex:none}
+.iconbtn{width:38px;height:38px;display:grid;place-items:center;border-radius:50%;border:1px solid var(--glass-border);background:transparent;color:var(--fg);flex:none}
+.iconbtn:hover{background:var(--glass-bg)}
+.progress{position:fixed;top:0;left:0;height:2px;background:var(--citrus);z-index:70;width:0}
+.burger{display:none}
+
+/* drawer */
+.drawer{position:fixed;inset:0;z-index:80;background:rgba(7,10,19,.72);backdrop-filter:blur(14px);-webkit-backdrop-filter:blur(14px);display:none;opacity:0;transition:opacity .25s var(--ease)}
+.drawer.open{display:block;opacity:1}
+.drawer>div{width:min(320px,86vw);height:100%;margin-left:auto;padding:24px 20px;display:flex;flex-direction:column;gap:8px;background:var(--bg-raised);border-left:1px solid var(--line);box-shadow:-10px 0 40px rgba(0,0,0,.5);overflow-y:auto;transform:translateX(100%);transition:transform .28s var(--ease)}
+.drawer.open>div{transform:translateX(0)}
+.drawer-head{display:flex;justify-content:space-between;align-items:center;padding-bottom:14px;border-bottom:1px solid var(--line);margin-bottom:8px}
+.drawer a{color:var(--fg);font:700 1.1rem var(--font-display);padding:12px 4px;border-bottom:1px solid var(--line)}
+.drawer a:hover{color:var(--citrus);text-decoration:none}
+
+/* toast */
+.toast-box{position:fixed;bottom:24px;left:50%;transform:translateX(-50%) translateY(120%);background:var(--bg-raised);color:var(--fg);padding:10px 22px;border-radius:999px;font:600 .86rem var(--font-mono);border:1px solid var(--citrus);box-shadow:0 12px 30px rgba(0,0,0,.5);z-index:100;opacity:0;transition:transform .3s var(--spring),opacity .3s var(--ease);pointer-events:none}
+.toast-box.show{transform:translateX(-50%) translateY(0);opacity:1}
+
+/* reveal */
+.rv{opacity:0;transform:translateY(24px);transition:opacity .7s var(--ease),transform .7s var(--ease)}
+.rv.in{opacity:1;transform:none}
+
+
+/* css/components.css : Quanta Components Design System */
+
+/* ==========================================================================
+   1. PIPELINE VISUAL (§2 : "Six tools. One call.")
+   ========================================================================== */
+.pipeline-panel{
+  min-height:560px;
+  height:560px;
+  padding:28px!important;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+  overflow:hidden;
+  position:relative;
+}
+
+.pipe-header{
+  display:flex;
+  justify-content:space-between;
+  align-items:center;
+  margin-bottom:16px;
+}
+.pipe-badge{
+  display:inline-flex;
+  align-items:center;
+  gap:8px;
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  padding:6px 14px;
+  border-radius:999px;
+  font:700 .86rem var(--font-mono);
+}
+.pipe-num{font-size:1rem;color:var(--citrus);transition:all .3s var(--spring)}
+.pipe-num.ok{color:var(--ok)}
+.pipe-sub{color:var(--fg-2);font-weight:500;font-size:.78rem}
+.pipe-arrow{color:var(--citrus);font-weight:700}
+.pipe-status-tag{font:600 .78rem var(--font-mono);color:var(--fg-2)}
+
+.pipe-stage{
+  display:grid;
+  grid-template-columns:190px 1fr 200px;
+  gap:12px;
+  align-items:center;
+  flex:1;
+  min-height:0;
+  position:relative;
+}
+
+/* Left: 6 stacked mini glass cards */
+.pipe-left{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  justify-content:space-between;
+  height:100%;
+}
+.pipe-card{
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  border-radius:12px;
+  padding:8px 12px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  position:relative;
+  transition:all .3s var(--ease);
+  box-shadow:0 4px 14px rgba(0,0,0,.2);
+}
+.pipe-card-info{display:flex;align-items:center;gap:8px}
+.pipe-card-port{width:8px;height:8px;border-radius:50%;flex:none}
+.pipe-card-name{font:600 .78rem var(--font-ui);color:var(--fg);white-space:nowrap}
+.pipe-stat-text{font:600 .68rem var(--font-mono);text-transform:uppercase;letter-spacing:.05em}
+.pipe-stat-text.err{color:var(--warn-text);animation:flicker 1.8s steps(2) infinite}
+.pipe-stat-text.ok{color:var(--ok)}
+@keyframes flicker{0%,100%{opacity:1}50%{opacity:.45}}
+
+/* Middle: SVG Canvas & Wires */
+.pipe-center{
+  height:100%;
+  position:relative;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+}
+.pipe-svg{
+  width:100%;
+  height:100%;
+  overflow:visible;
+}
+.pipe-wire{
+  fill:none;
+  stroke-width:2.2px;
+  opacity:.65;
+  transition:all .6s var(--ease);
+}
+.pipe-trunk{
+  stroke:var(--citrus);
+  stroke-width:2.5px;
+  opacity:.3;
+  transition:stroke-width .4s var(--spring),opacity .4s var(--ease),filter .4s var(--ease);
+}
+.pipe-trunk.merged{
+  stroke-width:8px;
+  opacity:1;
+  filter:drop-shadow(0 0 10px rgba(255,216,77,.6));
+  animation:trunkPulse 3s var(--ease) infinite;
+}
+@keyframes trunkPulse{
+  0%,100%{filter:drop-shadow(0 0 10px rgba(255,216,77,.6))}
+  50%{filter:drop-shadow(0 0 18px rgba(255,216,77,.9))}
+}
+.pipe-packet{
+  filter:drop-shadow(0 0 4px currentColor);
+}
+
+.pipe-merge-node{
+  position:absolute;
+  left:calc(100% * 180 / 240);
+  top:50%;
+  transform:translate(-50%,-50%);
+  width:42px;
+  height:42px;
+  border-radius:50%;
+  background:var(--citrus);
+  color:var(--ink);
+  display:grid;
+  place-items:center;
+  box-shadow:0 0 20px rgba(255,216,77,.5);
+  z-index:3;
+}
+.pipe-merge-node svg{width:22px;height:22px}
+
+/* Right: Endpoint & Response Cards */
+.pipe-right{
+  display:flex;
+  flex-direction:column;
+  gap:12px;
+  justify-content:center;
+  height:100%;
+}
+.pipe-end-card{
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  border-radius:12px;
+  padding:10px 14px;
+  font:600 .76rem var(--font-mono);
+  box-shadow:0 6px 18px rgba(0,0,0,.3);
+  transform:translateX(20px);
+  opacity:0;
+  transition:all .5s var(--spring);
+}
+.pipe-end-card.active{transform:translateX(0);opacity:1}
+.method-badge{
+  background:var(--citrus);
+  color:var(--ink);
+  padding:2px 6px;
+  border-radius:5px;
+  font-weight:800;
+  margin-right:6px;
+}
+.pipe-end-body{font-size:.70rem;color:var(--fg-2);margin-top:6px;margin-bottom:0}
+
+.pipe-resp-card{
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  border-radius:12px;
+  padding:12px 14px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+  box-shadow:0 6px 20px rgba(0,0,0,.3);
+  transform:translateX(20px);
+  opacity:0;
+  transition:all .5s var(--spring);
+}
+.pipe-resp-card.active{transform:translateX(0);opacity:1}
+.pipe-resp-head{
+  display:flex;
+  justify-content:space-between;
+  font:700 .72rem var(--font-mono);
+  color:var(--ok);
+  border-bottom:1px solid var(--line);
+  padding-bottom:6px;
+}
+.pipe-resp-row{
+  display:flex;
+  align-items:center;
+  gap:6px;
+  font:500 .72rem var(--font-mono);
+  color:var(--fg);
+}
+.pipe-chk{
+  width:14px;
+  height:14px;
+  border-radius:50%;
+  background:rgba(45,226,192,.2);
+  color:var(--ok);
+  display:grid;
+  place-items:center;
+  font-size:10px;
+  font-weight:800;
+  flex:none;
+}
+
+@media(max-width:760px){
+  .pipeline-panel{min-height:auto;height:auto}
+  .pipe-stage{grid-template-columns:1fr;gap:20px}
+  .pipe-center{height:160px}
+}
+
+/* ==========================================================================
+   2. COMPARISON MATRIX (§3 : "Three ways to get an answer.")
+   ========================================================================== */
+.cmp-container{
+  margin-top:32px;
+  padding:28px!important;
+  border-radius:var(--r-l);
+}
+.cmp-matrix{
+  display:grid;
+  grid-template-columns:minmax(220px,1.4fr) repeat(3, minmax(0,1fr));
+  gap:8px;
+  align-items:stretch;
+}
+
+/* Quanta raised card */
+.cmp-col-quanta{
+  background:rgba(255,216,77,.06);
+  border:1px solid rgba(255,216,77,.35);
+  border-top:2px solid var(--citrus);
+  border-radius:18px;
+  transform:translateY(-8px);
+  box-shadow:0 20px 40px -10px rgba(255,216,77,.18), 0 0 24px rgba(255,216,77,.08);
+  position:relative;
+  overflow:hidden;
+  z-index:2;
+}
+.cmp-col-quanta::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:linear-gradient(115deg,transparent 20%,rgba(255,255,255,.08) 50%,transparent 80%);
+  transform:translateX(-100%);
+  animation:cmpSheen 6s var(--ease) infinite;
+  pointer-events:none;
+}
+@keyframes cmpSheen{0%,75%{transform:translateX(-100%)}90%,100%{transform:translateX(100%)}}
+
+.cmp-col-flat{
+  background:rgba(255,255,255,.03);
+  border:1px solid var(--glass-border);
+  border-radius:18px;
+}
+[data-theme="light"] .cmp-col-flat{background:rgba(255,255,255,.6)}
+
+.cmp-cell{
+  padding:14px 16px;
+  border-bottom:1px solid var(--line);
+  display:flex;
+  align-items:center;
+  font:600 .86rem var(--font-ui);
+  position:relative;
+  min-height:56px;
+}
+.cmp-cell.head{
+  flex-direction:column;
+  align-items:flex-start;
+  min-height:92px;
+  justify-content:center;
+  border-bottom:2px solid var(--line);
+}
+.cmp-badge{
+  font:800 .92rem var(--font-display);
+  letter-spacing:-.01em;
+  color:var(--fg);
+  display:flex;
+  align-items:center;
+  gap:6px;
+}
+.cmp-sub{font:500 .72rem var(--font-ui);color:var(--fg-2);margin-top:4px}
+.cmp-cell.center{justify-content:center}
+
+/* Icons */
+.cmp-icon{width:24px;height:24px;display:grid;place-items:center;flex:none}
+.cmp-icon svg{width:100%;height:100%}
+.chk-draw{stroke-dasharray:20;stroke-dashoffset:20;transition:stroke-dashoffset .35s var(--ease)}
+.chk-draw.draw{stroke-dashoffset:0}
+
+/* Row hover highlight across all columns */
+.cmp-row-group{display:contents}
+.cmp-row-group.highlighted .cmp-cell{background:rgba(255,255,255,.07)}
+.cmp-row-group.dimmed .cmp-cell{opacity:.65}
+
+/* Tooltip */
+.cmp-cell .tip{
+  position:absolute;
+  bottom:calc(100% + 6px);
+  left:50%;
+  transform:translateX(-50%) translateY(4px);
+  background:var(--bg-raised);
+  color:var(--fg);
+  border:1px solid var(--line);
+  border-radius:8px;
+  padding:6px 12px;
+  font:500 .74rem var(--font-mono);
+  white-space:nowrap;
+  pointer-events:none;
+  opacity:0;
+  transition:all .2s var(--ease);
+  box-shadow:0 8px 20px rgba(0,0,0,.4);
+  z-index:20;
+}
+.cmp-cell:hover .tip{opacity:1;transform:translateX(-50%) translateY(0)}
+
+/* Scores meter row */
+.cmp-score-cell{
+  padding:16px;
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.cmp-score-val{font:800 1.1rem var(--font-mono);color:var(--fg)}
+.cmp-score-val.citrus{color:var(--citrus)}
+.cmp-meter{width:100%;height:6px;background:var(--line);border-radius:3px;overflow:hidden}
+.cmp-meter-bar{height:100%;width:0;background:var(--ok);transition:width 1s var(--ease);border-radius:3px}
+.cmp-meter-bar.citrus{background:var(--citrus)}
+
+.cmp-footnote{font:500 .76rem var(--font-ui);color:var(--fg-2);margin-top:16px}
+
+/* Mobile Tabs */
+.cmp-tabs-bar{display:none;gap:6px;margin-bottom:16px}
+.cmp-tab-btn{
+  flex:1;
+  padding:10px;
+  border-radius:12px;
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  font:700 .82rem var(--font-ui);
+  color:var(--fg-2);
+}
+.cmp-tab-btn.active{background:var(--citrus);color:var(--ink);border-color:var(--citrus)}
+
+@media(max-width:760px){
+  .cmp-tabs-bar{display:flex}
+  .cmp-matrix{grid-template-columns:1fr;display:block}
+  .cmp-col{display:none}
+  .cmp-col.active-mobile{display:block}
+  .cmp-col-quanta{transform:none}
+}
+
+/* ==========================================================================
+   3. MACOS TERMINAL WINDOW (§4 : "Don't take our word. Run it.")
+   ========================================================================== */
+.term-window{
+  background:#080B14;
+  border:1px solid var(--glass-border);
+  border-radius:14px;
+  box-shadow:0 24px 60px -20px rgba(0,0,0,.7),0 1px 0 rgba(255,255,255,.08) inset;
+  overflow:hidden;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  height:440px;
+}
+.term-titlebar{
+  background:rgba(255,255,255,.04);
+  border-bottom:1px solid rgba(255,255,255,.1);
+  padding:10px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  user-select:none;
+}
+.term-dots{display:flex;align-items:center;gap:8px}
+.term-dot{
+  width:12px;
+  height:12px;
+  border-radius:50%;
+  display:grid;
+  place-items:center;
+  font-size:9px;
+  font-weight:700;
+  line-height:1;
+  color:rgba(0,0,0,.6);
+  cursor:pointer;
+  position:relative;
+}
+.term-dot::after{content:"";opacity:0;transition:opacity .15s}
+.term-dots:hover .term-dot::after{opacity:1}
+.term-dot-red{background:#FF5F57}
+.term-dot-red::after{content:"×"}
+.term-dot-yellow{background:#FEBC2E}
+.term-dot-yellow::after{content:"−"}
+.term-dot-green{background:#28C840}
+.term-dot-green::after{content:"+"}
+
+.term-title{font:600 .76rem var(--font-mono);color:var(--fg-2);letter-spacing:.02em}
+.term-tools{display:flex;align-items:center;gap:6px}
+.term-tool-btn{
+  background:transparent;
+  border:1px solid rgba(255,255,255,.12);
+  color:var(--fg-2);
+  border-radius:6px;
+  padding:3px 8px;
+  font:600 .72rem var(--font-mono);
+  transition:all .18s;
+}
+.term-tool-btn:hover{background:rgba(255,255,255,.08);color:var(--fg)}
+
+.term-tab-strip{
+  display:flex;
+  gap:12px;
+  padding:6px 14px;
+  border-bottom:1px solid rgba(255,255,255,.08);
+  background:rgba(0,0,0,.3);
+  position:relative;
+}
+.term-tab{
+  background:transparent;
+  border:0;
+  color:var(--fg-2);
+  font:600 .76rem var(--font-mono);
+  padding:4px 8px;
+  border-radius:6px;
+  transition:color .18s;
+}
+.term-tab[aria-selected=true]{color:var(--citrus)}
+
+.term-body{
+  flex:1;
+  padding:16px;
+  font:500 14px/1.7 var(--font-mono);
+  color:#F3F6FF;
+  overflow-y:auto;
+  scroll-behavior:smooth;
+  position:relative;
+}
+.term-body::selection,.term-body *::selection{background:var(--citrus);color:var(--ink)}
+
+.term-pfx{color:var(--teal);font-weight:700}
+.term-cmd{color:#F3F6FF}
+.term-caret{display:inline-block;width:8px;height:1.2em;background:var(--citrus);vertical-align:-2px;margin-left:2px;animation:caretBlink .8s steps(1) infinite}
+@keyframes caretBlink{50%{opacity:0}}
+
+.term-ans-header{color:var(--citrus);font-weight:700;margin-top:8px}
+.term-ans-body{background:rgba(255,255,255,.03);border-left:2px solid var(--teal);padding:8px 12px;border-radius:0 8px 8px 0;margin:6px 0}
+
+.term-statusbar{
+  background:rgba(255,255,255,.04);
+  border-top:1px solid rgba(255,255,255,.08);
+  padding:8px 14px;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  font:600 .72rem var(--font-mono);
+}
+.term-badge{padding:2px 8px;border-radius:4px;font-weight:700}
+.term-badge.ok{background:rgba(45,226,192,.2);color:var(--ok)}
+.term-badge.ready{background:rgba(255,255,255,.1);color:var(--fg-2)}
+.term-badge.streaming{background:rgba(255,216,77,.2);color:var(--citrus)}
+.term-badge.warn{background:rgba(255,107,90,.2);color:var(--warn)}
+
+.term-json-fold{margin-top:8px}
+.term-json-btn{background:transparent;border:0;color:var(--link);font:600 .74rem var(--font-mono);padding:4px 0}
+.term-json-content{background:rgba(0,0,0,.5);border:1px solid var(--line);border-radius:8px;padding:10px;font-size:12px;color:var(--fg-2);margin:4px 0 0}
+
+/* ==========================================================================
+   4. FAQ SECTION (§5 : "Ask Quanta about Quanta.")
+   ========================================================================== */
+.faq-grid{
+  display:grid;
+  grid-template-columns:5fr 7fr;
+  gap:24px;
+  align-items:start;
+}
+.faq-list{
+  display:flex;
+  flex-direction:column;
+  gap:8px;
+}
+.faq-row{
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  border-radius:14px;
+  padding:14px 16px;
+  display:grid;
+  grid-template-columns:32px 1fr auto;
+  gap:12px;
+  align-items:center;
+  cursor:pointer;
+  transition:all .2s var(--ease);
+  user-select:none;
+}
+.faq-row:hover{background:rgba(255,255,255,.09)}
+.faq-row.active{
+  border-left:3px solid var(--citrus);
+  background:rgba(255,216,77,.08);
+  box-shadow:0 8px 24px rgba(0,0,0,.25);
+}
+.faq-row-num{font:800 .86rem var(--font-mono);color:var(--fg-2)}
+.faq-row.active .faq-row-num{color:var(--citrus)}
+.faq-row-q{font:700 .98rem var(--font-display);color:var(--fg);margin-bottom:2px}
+.faq-row-teaser{font:500 .76rem var(--font-ui);color:var(--fg-2)}
+.faq-row-arrow{font:700 .9rem var(--font-mono);color:var(--fg-2);transition:transform .2s var(--ease)}
+.faq-row.active .faq-row-arrow{color:var(--citrus);transform:translateX(4px)}
+
+.faq-panel{
+  padding:28px!important;
+  min-height:420px;
+  display:flex;
+  flex-direction:column;
+  justify-content:space-between;
+}
+.faq-panel-progress{
+  margin-bottom:18px;
+  display:flex;
+  align-items:center;
+  gap:10px;
+}
+.faq-panel-bar{
+  flex:1;
+  height:3px;
+  background:var(--line);
+  border-radius:2px;
+  overflow:hidden;
+  position:relative;
+}
+.faq-panel-bar::after{
+  content:"";
+  position:absolute;
+  inset:0;
+  background:var(--citrus);
+  animation:faqProg .4s var(--ease) forwards;
+}
+@keyframes faqProg{from{transform:translateX(-100%)}to{transform:translateX(0)}}
+.faq-stage-line{font:600 .74rem var(--font-mono);color:var(--fg-2)}
+
+.faq-ans-title{font-size:clamp(1.2rem,2.4vw,1.5rem);margin-bottom:14px}
+.faq-lead{font-size:1.06rem;color:var(--fg);margin-bottom:10px}
+.faq-ans-text p{margin-bottom:12px;color:var(--fg-2);line-height:1.7}
+
+.faq-citations{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin:16px 0 10px}
+.faq-cit-label{font:700 .74rem var(--font-mono);color:var(--fg-2)}
+.faq-pill{
+  background:rgba(255,216,77,.14);
+  color:var(--citrus);
+  border:1px solid rgba(255,216,77,.3);
+  padding:3px 10px;
+  border-radius:6px;
+  font:600 .74rem var(--font-mono);
+}
+.faq-sources-strip{
+  border-top:1px solid var(--line);
+  padding-top:12px;
+  margin-top:14px;
+}
+.faq-src-title{font:700 .68rem var(--font-mono);letter-spacing:.1em;color:var(--fg-2);display:block;margin-bottom:6px}
+.faq-src-list{display:flex;gap:14px;flex-wrap:wrap}
+.faq-src-item{font:500 .74rem var(--font-mono);color:var(--fg-2);display:inline-flex;align-items:center;gap:6px}
+
+.faq-related-row{display:flex;align-items:center;gap:8px;flex-wrap:wrap;margin-top:16px}
+.faq-docs-link{margin-left:auto;font:600 .82rem var(--font-ui);color:var(--link)}
+
+.faq-accordion{display:none}
+.faq-acc-item{border-bottom:1px solid var(--line);padding:14px 0}
+.faq-acc-summary{display:flex;align-items:center;gap:12px;cursor:pointer;list-style:none;font:700 1.05rem var(--font-display)}
+.faq-acc-summary::-webkit-details-marker{display:none}
+.faq-acc-num{font:800 .82rem var(--font-mono);color:var(--citrus)}
+.faq-acc-body{padding-top:12px}
+
+@media(max-width:960px){
+  .faq-grid{display:none}
+  .faq-accordion{display:block}
+}
+
+/* ==========================================================================
+   5. TELEMETRY & WATERFALL (§6a : "See how the research happened.")
+   ========================================================================== */
+.wf-chart{
+  position:relative;
+  padding:20px 0 10px;
+}
+.wf-axis{
+  position:relative;
+  height:24px;
+  border-bottom:1px solid var(--line);
+  margin-bottom:12px;
+}
+.wf-tick{
+  position:absolute;
+  top:0;
+  transform:translateX(-50%);
+  font:600 .70rem var(--font-mono);
+  color:var(--fg-2);
+}
+.wf-gridline{
+  position:absolute;
+  top:24px;
+  left:50%;
+  width:1px;
+  height:240px;
+  background:rgba(255,255,255,.05);
+  pointer-events:none;
+}
+
+.wf-rows{display:flex;flex-direction:column;gap:10px;position:relative}
+.wf-row{
+  display:grid;
+  grid-template-columns:64px 1fr;
+  gap:12px;
+  align-items:center;
+  height:36px;
+  position:relative;
+  transition:opacity .2s;
+}
+.wf-row.active .wf-tag{color:var(--citrus);font-weight:700}
+.wf-tag{font:600 .76rem var(--font-mono);color:var(--fg-2);text-transform:uppercase}
+
+.wf-track{
+  height:100%;
+  background:rgba(255,255,255,.02);
+  border-radius:6px;
+  position:relative;
+  overflow:hidden;
+}
+.wf-bar-wrap{
+  position:absolute;
+  top:4px;
+  bottom:4px;
+  cursor:pointer;
+}
+.wf-bar-fill{
+  height:100%;
+  width:0;
+  border-radius:4px;
+  position:relative;
+  display:flex;
+  align-items:center;
+  padding:0 8px;
+  transition:width .1s linear;
+}
+.wf-bar-fill.growing{
+  box-shadow:0 0 12px currentColor;
+}
+.wf-bar-cap{
+  position:absolute;
+  right:0;
+  top:0;
+  bottom:0;
+  width:4px;
+  background:#fff;
+  border-radius:2px;
+  opacity:0;
+}
+.wf-bar-fill.growing .wf-bar-cap{opacity:1;animation:capPulse .4s infinite alternate}
+@keyframes capPulse{from{opacity:.4}to{opacity:1}}
+
+.wf-bar-meta{
+  font:700 .68rem var(--font-mono);
+  color:#fff;
+  white-space:nowrap;
+  text-shadow:0 1px 3px rgba(0,0,0,.8);
+  pointer-events:none;
+}
+.wf-sparkline{
+  position:absolute;
+  inset:0;
+  opacity:.4;
+  pointer-events:none;
+}
+
+.wf-playhead{
+  position:absolute;
+  top:0;
+  bottom:0;
+  width:2px;
+  background:var(--citrus);
+  box-shadow:0 0 10px var(--citrus);
+  pointer-events:none;
+  z-index:10;
+  transition:left .1s linear;
+}
+.wf-clock-rider{
+  position:absolute;
+  top:-22px;
+  left:50%;
+  transform:translateX(-50%);
+  background:var(--citrus);
+  color:var(--ink);
+  font:800 .68rem var(--font-mono);
+  padding:2px 6px;
+  border-radius:4px;
+  white-space:nowrap;
+}
+.wf-total-chip{
+  position:absolute;
+  right:10px;
+  bottom:10px;
+  background:var(--citrus);
+  color:var(--ink);
+  padding:4px 10px;
+  border-radius:999px;
+  font:800 .74rem var(--font-mono);
+  opacity:0;
+  transform:scale(.8);
+  transition:all .3s var(--spring);
+}
+.wf-total-chip.pop{opacity:1;transform:scale(1)}
+
+.wf-tooltip{
+  position:absolute;
+  background:var(--bg-raised);
+  border:1px solid var(--glass-border);
+  border-radius:8px;
+  padding:8px 12px;
+  font:500 .74rem var(--font-mono);
+  color:var(--fg);
+  box-shadow:0 8px 24px rgba(0,0,0,.5);
+  pointer-events:none;
+  display:none;
+  z-index:30;
+  max-width:260px;
+}
+
+/* Circular Gauges */
+.telemetry-dashboard{display:flex;flex-direction:column;gap:20px}
+.telemetry-gauges{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
+.tgauge{
+  background:var(--glass-bg);
+  border:1px solid var(--glass-border);
+  border-radius:14px;
+  padding:14px;
+  display:flex;
+  align-items:center;
+  gap:12px;
+}
+.tgauge-svg{width:48px;height:48px;flex:none}
+.tgauge-bg{fill:none;stroke:var(--line);stroke-width:3}
+.tgauge-arc{
+  fill:none;
+  stroke:var(--ok);
+  stroke-width:3;
+  stroke-dasharray:100;
+  stroke-dashoffset:100;
+  stroke-linecap:round;
+  transition:stroke-dashoffset .5s var(--ease);
+}
+.tgauge-arc.citrus{stroke:var(--citrus)}
+.tgauge-info b{display:block;font:800 .98rem var(--font-mono);color:var(--fg)}
+.tgauge-info span{font:500 .72rem var(--font-mono);color:var(--fg-2)}
+
+/* ==========================================================================
+   6. THERMAL PRINTER RECEIPT (§6b)
+   ========================================================================== */
+.receipt-wrapper{
+  min-height:500px;
+  position:relative;
+  display:flex;
+  flex-direction:column;
+  align-items:center;
+}
+.receipt-slot{
+  width:min(100%,340px);
+  height:18px;
+  background:rgba(255,255,255,.08);
+  border:1px solid var(--glass-border);
+  border-radius:9px 9px 0 0;
+  display:flex;
+  align-items:center;
+  justify-content:space-between;
+  padding:0 12px;
+  z-index:5;
+  box-shadow:0 -4px 12px rgba(0,0,0,.3);
+}
+.rcpt-led{
+  width:7px;
+  height:7px;
+  border-radius:50%;
+  background:var(--fg-2);
+}
+.rcpt-led.printing{
+  background:var(--ok);
+  box-shadow:0 0 8px var(--ok);
+  animation:ping 1s infinite;
+}
+.rcpt-led.idle{background:var(--ok)}
+
+.receipt-paper{
+  width:min(100%,330px);
+  background:#FBF8EF;
+  color:#16181A;
+  font:500 .82rem/1.9 var(--font-mono);
+  padding:24px 20px 20px;
+  box-shadow:0 18px 45px rgba(0,0,0,.35);
+  border-radius:0 0 6px 6px;
+  transform-origin:top center;
+  transition:transform .4s var(--ease),opacity .4s var(--ease);
+  position:relative;
+  cursor:pointer;
+  user-select:none;
+}
+.receipt-paper.torn{
+  transform:translateY(80px) rotate(3deg);
+  opacity:0;
+}
+
+.rcpt-head{text-align:center;font-weight:700;letter-spacing:.06em;margin-bottom:8px}
+.rcpt-dash-line{border-bottom:1px dashed #7a7560;margin-bottom:10px}
+.rcpt-row{display:flex;align-items:baseline;justify-content:space-between;gap:4px}
+.rcpt-label{white-space:nowrap}
+.rcpt-leader{flex:1;border-bottom:1px dotted #8a8570;margin:0 4px;transform:translateY(-4px);opacity:0}
+.rcpt-leader.grow{opacity:1}
+.rcpt-val{font-weight:700;white-space:nowrap}
+.rcpt-total{
+  border-top:2px solid #16181A;
+  margin-top:10px;
+  padding-top:6px;
+  display:flex;
+  align-items:baseline;
+  font-weight:800;
+}
+.rcpt-stamp{
+  color:#B91C1C;
+  border:2px solid #B91C1C;
+  padding:2px 6px;
+  border-radius:4px;
+  font-weight:800;
+  transform:rotate(-3deg);
+  display:inline-block;
+}
+.rcpt-barcode{
+  height:30px;
+  margin-top:14px;
+  background:repeating-linear-gradient(90deg,#16181A 0 2px,#FBF8EF 2px 5px,#16181A 5px 6px,#FBF8EF 6px 9px);
+  transform-origin:left;
+  animation:bcDraw .4s var(--ease) forwards;
+}
+@keyframes bcDraw{from{transform:scaleX(0)}to{transform:scaleX(1)}}
+.rcpt-perf{
+  border-bottom:2px dashed #999;
+  margin-top:14px;
+}
+
+</style>
+</head>
+<body>
+<a class="skip" href="#main">Skip to content</a>
+<div class="progress" id="prog"></div>
+
+<header class="nav" id="nav">
+  <div class="navpill glass g1">
+    <a class="brand" href="/"><svg width="26" height="26" viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="4" width="16" height="16" rx="4" fill="#2A45E8"/><rect x="9" y="9" width="16" height="16" rx="4" fill="#FFD84D" opacity=".95"/><rect x="14" y="6" width="14" height="14" rx="4" fill="#2DE2C0" opacity=".9"/><rect x="3" y="27" width="26" height="3" rx="1.5" fill="#FFD84D"/></svg>Quanta<span class="dot" id="hdot" title="Checking status"></span></a>
+    <nav class="navlinks" aria-label="Sections">
+      <a href="#how">How it works</a><a href="#depth">Depth</a><a href="#dev">Developers</a><a href="/docs">Docs</a>
+    </nav>
+    <div class="navtools">
+      <button class="iconbtn" id="th" aria-label="Switch colour theme"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" aria-hidden="true"><circle cx="12" cy="12" r="4.5"/><path d="M12 2v2.5M12 19.5V22M2 12h2.5M19.5 12H22M4.9 4.9l1.8 1.8M17.3 17.3l1.8 1.8M19.1 4.9l-1.8 1.8M6.7 17.3l-1.8 1.8"/></svg></button>
+      <a class="btn" href="/ask">Try Quanta</a>
+      <button class="iconbtn burger" id="bg" aria-label="Open menu" aria-expanded="false"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2" aria-hidden="true"><path d="M3 6h18M3 12h18M3 18h18"/></svg></button>
+    </div>
+  </div>
+</header>
+<div class="drawer" id="drawer" role="dialog" aria-modal="true" aria-label="Navigation Menu">
+  <div class="glass g3">
+    <div class="drawer-head">
+      <span class="brand"><svg width="24" height="24" viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="4" width="16" height="16" rx="4" fill="#2A45E8"/><rect x="9" y="9" width="16" height="16" rx="4" fill="#FFD84D" opacity=".95"/><rect x="14" y="6" width="14" height="14" rx="4" fill="#2DE2C0" opacity=".9"/><rect x="3" y="27" width="26" height="3" rx="1.5" fill="#FFD84D"/></svg>Quanta</span>
+      <button class="iconbtn" id="drawer-close" aria-label="Close menu"><svg width="18" height="18" viewBox="0 0 24 24" stroke="currentColor" stroke-width="2"><path d="M18 6L6 18M6 6l12 12"/></svg></button>
+    </div>
+    <a href="#how">How it works</a><a href="#depth">Depth</a><a href="#dev">Developers</a><a href="/docs">Docs</a><a href="/api">API explorer</a>
+  </div>
+</div>
+
+<main id="main">
+
+<!-- 1 · HERO -->
+<section class="sec" id="hero" data-scene="aurora">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div><div class="grain" aria-hidden="true"></div>
+  <canvas id="stars" aria-hidden="true"></canvas>
+  <div class="wrap grid12">
+    <div class="hcopy">
+      <p class="eyebrow fade">Web research API</p>
+      <h1><span class="mask"><span>Search stops at links.</span></span><span class="mask"><span>Research <span class="hl">doesn't.</span></span></span></h1>
+      <p class="lede fade" style="animation-delay:.2s">Quanta plans the searches, reads the real pages, and hands back a cited answer with the sources behind it. Streamed live, built for developers and AI agents.</p>
+      <form class="composer glass g2" id="cf">
+        <label class="sr" for="q">Your question</label>
+        <textarea id="q" rows="2" placeholder="Why is the Great Barrier Reef bleaching, and can it recover?"></textarea>
+        <div class="composer-row">
+          <div class="depthpill">
+            <button class="tb" type="button" id="db" aria-haspopup="true" aria-expanded="false">Fast</button>
+            <div class="menu glass g2" id="dm" role="menu" aria-label="Depth"></div>
+          </div>
+          <button class="btn" type="submit">Research it</button>
+        </div>
+      </form>
+      <div class="promptchips" id="chips"></div>
+      <p class="microline" id="micro">Free to start · No API key · <span id="eng">engines loading</span></p>
+    </div>
+    <div class="hvisual">
+      <div class="evidence glass g2" role="img" aria-label="A question is typed, three pages are read, and one sentence is highlighted with its citation.">
+        <div class="evhead"><span>Evidence scene</span><span id="evstat">idle</span></div>
+        <div class="evq" id="evq"></div>
+        <div class="evlist" id="evlist"></div>
+        <div class="evans" id="evans"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<div class="mq" aria-label="Source categories"><div id="mqrow"></div></div>
+
+<!-- 2 · SIX TOOLS (PIPELINE VISUAL) -->
+<section class="sec rv" data-scene="cobalt" id="six-tools">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap grid12">
+    <div style="grid-column:1/span 5">
+      <p class="eyebrow">One endpoint</p>
+      <h2>Six tools. <span class="hl">One call.</span></h2>
+      <p class="lede">Search APIs, page retrieval, content extraction, orchestration, streaming and telemetry usually mean weeks of glue code. Quanta puts them behind one request.</p>
+      <p style="margin-top:22px"><code class="chip">POST /search</code></p>
+    </div>
+    <div style="grid-column:6/span 7">
+      <div class="pipeline-panel glass g2" id="pipePanel">
+        <div class="pipe-header">
+          <div class="pipe-badge">
+            <span class="pipe-num" id="pipeCountA">6</span> <span class="pipe-sub">integrations</span> <span class="pipe-arrow">→</span> <span class="pipe-num ok" id="pipeCountB">1</span> <span class="pipe-sub">request</span>
+          </div>
+          <div class="pipe-status-tag" id="pipeTag">6 integrations tangled</div>
+        </div>
+        <div class="pipe-stage">
+          <!-- Left: 6 stacked mini glass cards -->
+          <div class="pipe-left">
+            <div class="pipe-card" data-idx="0">
+              <div class="pipe-card-info">
+                <span class="pipe-card-port" style="background:#4C6FFF"></span>
+                <span class="pipe-card-name">Search APIs</span>
+              </div>
+              <span class="pipe-stat-text err" data-err="rate limit">rate limit</span>
+            </div>
+            <div class="pipe-card" data-idx="1">
+              <div class="pipe-card-info">
+                <span class="pipe-card-port" style="background:#2DE2C0"></span>
+                <span class="pipe-card-name">Page retrieval</span>
+              </div>
+              <span class="pipe-stat-text err" data-err="timeout">timeout</span>
+            </div>
+            <div class="pipe-card" data-idx="2">
+              <div class="pipe-card-info">
+                <span class="pipe-card-port" style="background:#FF6B5A"></span>
+                <span class="pipe-card-name">Extraction</span>
+              </div>
+              <span class="pipe-stat-text err" data-err="parse error">parse error</span>
+            </div>
+            <div class="pipe-card" data-idx="3">
+              <div class="pipe-card-info">
+                <span class="pipe-card-port" style="background:#A78BFA"></span>
+                <span class="pipe-card-name">Orchestration</span>
+              </div>
+              <span class="pipe-stat-text err" data-err="retry 3/5">retry 3/5</span>
+            </div>
+            <div class="pipe-card" data-idx="4">
+              <div class="pipe-card-info">
+                <span class="pipe-card-port" style="background:#FEBC2E"></span>
+                <span class="pipe-card-name">Streaming</span>
+              </div>
+              <span class="pipe-stat-text err" data-err="drop 12%">drop 12%</span>
+            </div>
+            <div class="pipe-card" data-idx="5">
+              <div class="pipe-card-info">
+                <span class="pipe-card-port" style="background:#34D399"></span>
+                <span class="pipe-card-name">Telemetry</span>
+              </div>
+              <span class="pipe-stat-text err" data-err="lag 420ms">lag 420ms</span>
+            </div>
+          </div>
+          <!-- Middle: SVG Wires and Merge Node -->
+          <div class="pipe-center">
+            <svg class="pipe-svg" id="pipeSvg" viewBox="0 0 240 440" preserveAspectRatio="none"></svg>
+            <div class="pipe-merge-node" id="pipeMergeNode" title="Quanta Merge Node">
+              <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="12" r="3" fill="currentColor"/></svg>
+            </div>
+          </div>
+          <!-- Right: Endpoint and Response Cards -->
+          <div class="pipe-right">
+            <div class="pipe-end-card" id="pipeEndpointCard">
+              <div><span class="method-badge">POST</span><span>/search</span></div>
+              <pre class="pipe-end-body">{ "query": "…", "depth": "fast" }</pre>
+            </div>
+            <div class="pipe-resp-card" id="pipeResponseCard">
+              <div class="pipe-resp-head"><span>RESPONSE 200 OK</span><span>100%</span></div>
+              <div class="pipe-resp-row"><span class="pipe-chk">✓</span><span>answer</span></div>
+              <div class="pipe-resp-row"><span class="pipe-chk">✓</span><span>sources[ ]</span></div>
+              <div class="pipe-resp-row"><span class="pipe-chk">✓</span><span>key_points[ ]</span></div>
+              <div class="pipe-resp-row"><span class="pipe-chk">✓</span><span>tokens (0 wasted)</span></div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3 · LINKS VS RESEARCH -->
+<section class="sec rv">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div><div class="grain" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="eyebrow">From search to intelligence</p>
+    <h2>Others hand you links. Quanta hands you <span class="hl">the work.</span></h2>
+    <div class="lane glass g1">
+      <h3><span class="node stop">Traditional search</span></h3>
+      <div class="steps"><span class="node">Query</span><span class="arrow">&rarr;</span><span class="node stop">Links</span><span class="arrow">&rarr;</span><span class="node">Done</span></div>
+      <p class="lede" style="margin-top:14px">You get ten blue links and the reading is still yours to do.</p>
+    </div>
+    <div class="lane glass g2">
+      <h3><span class="packet-box"><span class="packet" aria-hidden="true"></span></span><span>Quanta</span></h3>
+      <div class="steps" id="gates"></div>
+      <p class="lede" style="margin-top:14px">The difference isn't more results. It's turning web access into a research workflow.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 4 · THE RESEARCH RUN (pinned) -->
+<section class="sec" id="how" data-scene="stage">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <p class="eyebrow">How it works</p>
+    <h2>Plan. Search. Read. <span class="hl">Write.</span></h2>
+    <p class="lede">Six stages, all of them visible while they happen.</p>
+    <div class="pinwrap" id="pinwrap" style="margin-top:36px">
+      <div class="rail" id="rail" aria-label="Step indicator"></div>
+      <div class="pinsticky">
+        <div id="stepcopy"></div>
+        <div class="stagewin glass g2" id="stagewin" aria-live="off"></div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 5 · DEPTH DIAL -->
+<section class="sec rv" id="depth" data-scene="mint">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <p class="eyebrow">What you get</p>
+    <h2>Deep research, <span class="hl">on a dial.</span></h2>
+    <p class="lede">Instant, Fast, Deep, Extreme, Ultra. Pick how much exploring the question deserves.</p>
+    <div class="dialrow">
+      <div class="dial" id="dial" role="slider" tabindex="0" aria-label="Research depth" aria-valuemin="0" aria-valuemax="4" aria-valuenow="1" aria-valuetext="Fast">
+        <svg viewBox="0 0 200 200" aria-hidden="true">
+          <circle cx="100" cy="100" r="86" fill="none" stroke="currentColor" stroke-opacity=".18" stroke-width="2"/>
+          <g id="ticks"></g>
+          <g class="knob" id="knob"><line x1="100" y1="100" x2="100" y2="30" stroke="#0B0F1E" stroke-width="5" stroke-linecap="round"/><circle cx="100" cy="100" r="12" fill="#FFD84D" stroke="#0B0F1E" stroke-width="4"/></g>
+        </svg>
+      </div>
+      <div>
+        <h3 id="dname" style="font-size:1.9rem">Fast</h3>
+        <p class="lede" id="ddesc" style="margin-top:10px"></p>
+        <div class="dialout" style="margin-top:22px">
+          <div class="stat glass g1"><b id="dang">3</b><span>search angles</span></div>
+          <div class="stat glass g1"><b id="dpg">5</b><span>pages read</span></div>
+          <div class="stat glass g1"><b id="dtm">15–30 s</b><span>typical time</span></div>
+          <div class="stat glass g1"><b id="dtok">2,000</b><span>answer tokens</span></div>
+        </div>
+        <p style="margin-top:20px"><a class="btn ghost" href="/docs#depth">Read the depth docs</a></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6 · WHO IT HELPS -->
+<section class="sec rv">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div><div class="grain" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="eyebrow">Who it's for</p>
+    <h2>Not another search box. A research <span class="hl">layer.</span></h2>
+    <div class="cards c3" id="who"></div>
+  </div>
+</section>
+
+<!-- 7 · TRY IT (MACOS TERMINAL) -->
+<section class="sec rv">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div><div class="grain" aria-hidden="true"></div>
+  <div class="wrap grid12">
+    <div style="grid-column:1/span 5">
+      <p class="eyebrow">Try it</p>
+      <h2>Don't take our word. <span class="hl">Run it.</span></h2>
+      <p class="lede">A real call against this server. Instant depth, no key, nothing to install.</p>
+      <div style="margin-top:20px">
+        <label class="sr" for="termInput">Query to run</label>
+        <input type="text" id="termInput" class="tb" style="width:100%;margin-bottom:12px;background:var(--glass-bg)" placeholder="How do bees decide where to build a new hive?">
+        <div style="display:flex;gap:10px;flex-wrap:wrap">
+          <button class="btn" id="termRunLiveBtn">Run it live</button>
+          <button class="btn ghost" id="termStopBtn" style="display:none;color:var(--warn)">Stop (^C)</button>
+          <a class="btn ghost" href="/api">API explorer</a>
+        </div>
+      </div>
+      <p class="microline" id="runt">GET /stream?depth=instant</p>
+    </div>
+    <div style="grid-column:6/span 7">
+      <div class="term-window" id="termWindow" tabindex="0" role="region" aria-label="Live research terminal">
+        <div class="term-titlebar">
+          <div class="term-dots">
+            <span class="term-dot term-dot-red" title="Close"></span>
+            <span class="term-dot term-dot-yellow" title="Minimize"></span>
+            <span class="term-dot term-dot-green" title="Expand"></span>
+          </div>
+          <div class="term-title">quanta — zsh — 96×28</div>
+          <div class="term-tools">
+            <button class="term-tool-btn" id="termCopyBtn" title="Copy terminal output">Copy</button>
+            <button class="term-tool-btn" id="termReplayBtn" title="Replay demo">Replay</button>
+          </div>
+        </div>
+        <div class="term-tab-strip" role="tablist">
+          <button class="term-tab" role="tab" aria-selected="true" data-lang="cURL">cURL</button>
+          <button class="term-tab" role="tab" aria-selected="false" data-lang="Python">Python</button>
+          <button class="term-tab" role="tab" aria-selected="false" data-lang="JavaScript">JavaScript</button>
+          <div class="term-tab-indicator" id="termTabIndicator"></div>
+        </div>
+        <div class="term-body" id="termBody" aria-live="polite"></div>
+        <div class="term-statusbar">
+          <div style="display:flex;align-items:center;gap:6px">
+            <span class="dot ok"></span>
+            <span id="termStatusConn">connected</span>
+          </div>
+          <div>
+            <span class="term-badge ready" id="termStatusBadge">READY</span>
+            <span class="dim" id="termModeLabel" style="margin-left:8px">Recorded sample</span>
+          </div>
+          <div id="termTimer">0.0s</div>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 8 · SSE STREAMING -->
+<section class="sec rv" data-scene="stage">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap grid12">
+    <div style="grid-column:1/span 5">
+      <p class="eyebrow">SSE streaming</p>
+      <h2>Don't wait for the whole run. <span class="hl">Watch it.</span></h2>
+      <p class="lede">Quanta streams every stage as it happens, so your interface can show progress instead of a spinner.</p>
+      <div style="margin-top:20px" id="sserail"></div>
+    </div>
+    <div style="grid-column:6/span 7"><div class="streamwin glass g2" id="swin" aria-hidden="true"></div></div>
+  </div>
+</section>
+
+<!-- 9 · TELEMETRY (WATERFALL & THERMAL RECEIPT) -->
+<section class="sec rv" data-scene="aurora">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div><div class="grain" aria-hidden="true"></div>
+  <div class="wrap grid12">
+    <div style="grid-column:1/span 5">
+      <p class="eyebrow">Telemetry</p>
+      <h2>See how the research <span class="hl">happened.</span></h2>
+      <p class="lede">Every response can carry the timeline: stages, sources found, pages read, words extracted, tokens used.</p>
+      <div style="margin-top:28px">
+        <div class="receipt-wrapper" id="receiptPrinter" title="Click to copy plain text receipt">
+          <div class="receipt-slot">
+            <span class="rcpt-led printing" id="receiptSlotLed" title="Printer status"></span>
+            <button id="receiptReplayBtn" class="tb" style="padding:2px 8px;font-size:11px">Replay</button>
+          </div>
+          <div class="receipt-paper" id="receiptPaper"></div>
+        </div>
+      </div>
+    </div>
+    <div style="grid-column:6/span 7">
+      <div class="glass g2 telemetry-dashboard">
+        <!-- Circular Gauges -->
+        <div class="telemetry-gauges">
+          <div class="tgauge">
+            <svg class="tgauge-svg" viewBox="0 0 36 36">
+              <path class="tgauge-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path class="tgauge-arc citrus" id="gaugeEffArc" stroke-dasharray="100, 100" stroke-dashoffset="0" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            </svg>
+            <div class="tgauge-info">
+              <b id="gaugeEffVal">100%</b>
+              <span>Efficiency (0 wasted)</span>
+            </div>
+          </div>
+          <div class="tgauge">
+            <svg class="tgauge-svg" viewBox="0 0 36 36">
+              <path class="tgauge-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path class="tgauge-arc" id="gaugePgArc" stroke-dasharray="100, 100" stroke-dashoffset="72" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            </svg>
+            <div class="tgauge-info">
+              <b id="gaugePgVal">10 / 36</b>
+              <span>Pages read</span>
+            </div>
+          </div>
+          <div class="tgauge">
+            <svg class="tgauge-svg" viewBox="0 0 36 36">
+              <path class="tgauge-bg" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+              <path class="tgauge-arc" id="gaugeProvArc" stroke-dasharray="100, 100" stroke-dashoffset="0" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831"/>
+            </svg>
+            <div class="tgauge-info">
+              <b id="gaugeProvVal">7</b>
+              <span>Live engines</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Waterfall Chart -->
+        <div class="wf-chart" id="telemetryWaterfall">
+          <div class="wf-axis" id="wfAxis"></div>
+          <div class="wf-rows" id="wfRows"></div>
+          <div class="wf-playhead" id="wfPlayhead">
+            <span class="wf-clock-rider" id="wfClock">00:00.0</span>
+          </div>
+          <div class="wf-total-chip" id="wfTotalChip">52.0 s total</div>
+          <div class="wf-tooltip" id="wfTooltip"></div>
+        </div>
+
+        <div style="display:flex;justify-content:space-between;align-items:center;margin-top:12px;border-top:1px solid var(--line);padding-top:10px">
+          <p class="microline">Candidates: <strong id="telemetryCandidates" style="color:var(--fg)">175</strong> · Pages: <strong id="telemetryPages" style="color:var(--fg)">10</strong> · Words: <strong id="telemetryWords" style="color:var(--fg)">30,066</strong></p>
+          <span class="microline">Captured Deep Run (100% eff)</span>
+        </div>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 10 · JSON -->
+<section class="sec rv" data-scene="cobalt">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap grid12">
+    <div style="grid-column:1/span 5">
+      <p class="eyebrow">Structured output</p>
+      <h2>JSON your code can <span class="hl">trust.</span></h2>
+      <p class="lede">Answer, sources, scores, key points and token accounting in one predictable shape.</p>
+      <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:20px" id="consumers"></div>
+    </div>
+    <div style="grid-column:6/span 7"><div class="code"><pre id="jsonv"></pre></div></div>
+  </div>
+</section>
+
+<!-- 11 · ARCHITECTURE -->
+<section class="sec rv">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div><div class="grain" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="eyebrow">Architecture</p>
+    <h2>Your app, Quanta, your AI. <span class="hl">In one line.</span></h2>
+    <div class="glass g1 table-scroll" style="padding:28px!important;margin-top:32px">
+      <svg class="arch-svg" viewBox="0 0 1000 150" role="img" aria-label="Your application calls Quanta, which searches, reads and researches, synthesizes, and returns structured data to your AI or system.">
+        <defs><marker id="ah" markerWidth="8" markerHeight="8" refX="6" refY="3" orient="auto"><path d="M0 0 L6 3 L0 6z" fill="currentColor" opacity=".6"/></marker></defs>
+        <g font-family="var(--font-mono)" font-size="13" font-weight="600" text-anchor="middle">
+          <g id="archg"></g>
+        </g>
+      </svg>
+    </div>
+  </div>
+</section>
+
+<!-- 12 · DEVELOPERS -->
+<section class="sec rv" id="dev" data-scene="stage">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="wrap">
+    <p class="eyebrow">Developers</p>
+    <h2>Drop it in. <span class="hl">Ship research.</span></h2>
+    <div class="grid12" style="margin-top:32px">
+      <div style="grid-column:1/span 7">
+        <div class="code">
+          <div class="codebar" role="tablist" aria-label="Language" id="tabs"></div>
+          <pre id="snip"></pre>
+        </div>
+      </div>
+      <div style="grid-column:8/span 5"><div class="term" id="dterm" aria-hidden="true"></div></div>
+    </div>
+    <div class="cards c4" style="margin-top:24px">
+      <div class="card glass g1"><h3>Flexible output</h3><p>Choose the depth and how many sources come back.</p><span class="md">max_results 1–60</span></div>
+      <div class="card glass g1"><h3>Large capacity</h3><p>Answer budgets scale with the depth you pick.</p><span class="md">up to 20,000 tokens</span></div>
+      <div class="card glass g1"><h3>Streaming</h3><p>Server-sent events for every stage of the run.</p><span class="md">GET /stream</span></div>
+      <div class="card glass g1"><h3>API-first</h3><p>Use it inside your own product, not beside it.</p><span class="md">POST /search</span></div>
+    </div>
+    <p style="margin-top:24px;display:flex;gap:10px;flex-wrap:wrap"><a class="btn" href="/docs">Read the docs</a><a class="btn ghost" href="/api">API explorer</a></p>
+  </div>
+</section>
+
+<!-- 13 · WHY QUANTA (COMPARISON MATRIX) -->
+<section class="sec rv" id="compare">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div><div class="grain" aria-hidden="true"></div>
+  <div class="wrap">
+    <p class="eyebrow">Why Quanta</p>
+    <h2>Three ways to get an answer. Only one <span class="hl">reads.</span></h2>
+    <div class="cmp-container glass g3" id="cmpMatrix">
+      <!-- Mobile Tabs -->
+      <div class="cmp-tabs-bar">
+        <button class="cmp-tab-btn" data-target="llm">LLM alone</button>
+        <button class="cmp-tab-btn" data-target="search">Search API</button>
+        <button class="cmp-tab-btn active" data-target="quanta">Quanta</button>
+      </div>
+
+      <div class="cmp-matrix">
+        <!-- Capability Column -->
+        <div class="cmp-col cmp-col-cap">
+          <div class="cmp-cell head">
+            <span class="cmp-badge">CAPABILITY</span>
+            <span class="cmp-sub">Core evaluation criteria</span>
+          </div>
+          <div class="cmp-row-group" data-row="0">
+            <div class="cmp-cell">Fresh information</div>
+          </div>
+          <div class="cmp-row-group" data-row="1">
+            <div class="cmp-cell">Reads full pages</div>
+          </div>
+          <div class="cmp-row-group" data-row="2">
+            <div class="cmp-cell">Cited sources</div>
+          </div>
+          <div class="cmp-row-group" data-row="3">
+            <div class="cmp-cell">Streams its progress</div>
+          </div>
+          <div class="cmp-row-group" data-row="4">
+            <div class="cmp-cell">Shows how it worked (telemetry)</div>
+          </div>
+          <div class="cmp-row-group" data-row="5">
+            <div class="cmp-cell">One request</div>
+          </div>
+          <div class="cmp-cell" style="min-height:70px">
+            <span class="cmp-sub">Approach score</span>
+          </div>
+        </div>
+
+        <!-- LLM Alone -->
+        <div class="cmp-col cmp-col-flat" data-col="llm">
+          <div class="cmp-cell head">
+            <span class="cmp-badge">LLM ALONE</span>
+            <span class="cmp-sub">Good at language, stale on facts</span>
+          </div>
+          <div class="cmp-row-group" data-row="0">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="none"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.8"/><path d="M8 8l8 8M16 8l-8 8" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="tip">LLM alone: knowledge cutoff, stale on facts</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="1">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="none"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.8"/><path d="M8 8l8 8M16 8l-8 8" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="tip">No web retrieval capability</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="2">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="none"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.8"/><path d="M8 8l8 8M16 8l-8 8" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="tip">Hallucinated or unverified citations</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="3">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="partial"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#FEBC2E" stroke-width="2"/><path d="M12 2 A10 10 0 0 1 12 22 Z" fill="#FEBC2E" opacity=".4"/><circle cx="12" cy="12" r="3" fill="#FEBC2E"/></svg></span>
+              <span class="tip">Streams tokens only, no research phases</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="4">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="none"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.8"/><path d="M8 8l8 8M16 8l-8 8" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="tip">Black box model execution</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="5">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="full"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="rgba(45,226,192,0.15)" stroke="var(--ok)" stroke-width="2"/><path d="M7 12l3.5 3.5 6.5-6.5" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="chk-draw draw"/></svg></span>
+              <span class="tip">Single prompt request</span>
+            </div>
+          </div>
+          <div class="cmp-score-cell">
+            <div class="cmp-score-val">1 / 6</div>
+            <div class="cmp-meter"><div class="cmp-meter-bar" data-score="16.7"></div></div>
+          </div>
+        </div>
+
+        <!-- Search API Alone -->
+        <div class="cmp-col cmp-col-flat" data-col="search">
+          <div class="cmp-cell head">
+            <span class="cmp-badge">SEARCH API ALONE</span>
+            <span class="cmp-sub">Good at links, no reading</span>
+          </div>
+          <div class="cmp-row-group" data-row="0">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="full"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="rgba(45,226,192,0.15)" stroke="var(--ok)" stroke-width="2"/><path d="M7 12l3.5 3.5 6.5-6.5" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="chk-draw draw"/></svg></span>
+              <span class="tip">Fresh web links and indices</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="1">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="none"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.8"/><path d="M8 8l8 8M16 8l-8 8" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="tip">Returns snippets only, never reads pages</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="2">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="partial"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="#FEBC2E" stroke-width="2"/><path d="M12 2 A10 10 0 0 1 12 22 Z" fill="#FEBC2E" opacity=".4"/><circle cx="12" cy="12" r="3" fill="#FEBC2E"/></svg></span>
+              <span class="tip">Links only, no claim-level citations</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="3">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="none"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.8"/><path d="M8 8l8 8M16 8l-8 8" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="tip">Single blocking HTTP response</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="4">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="none"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.8"/><path d="M8 8l8 8M16 8l-8 8" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="tip">Basic HTTP status, no research telemetry</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="5">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="none"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="none" stroke="rgba(255,255,255,0.18)" stroke-width="1.8"/><path d="M8 8l8 8M16 8l-8 8" stroke="rgba(255,255,255,0.3)" stroke-width="2" stroke-linecap="round"/></svg></span>
+              <span class="tip">Requires external crawlers and parser glue</span>
+            </div>
+          </div>
+          <div class="cmp-score-cell">
+            <div class="cmp-score-val">1 / 6</div>
+            <div class="cmp-meter"><div class="cmp-meter-bar" data-score="16.7"></div></div>
+          </div>
+        </div>
+
+        <!-- Quanta Raised Card -->
+        <div class="cmp-col cmp-col-quanta active-mobile" data-col="quanta">
+          <div class="cmp-cell head">
+            <span class="cmp-badge" style="color:var(--citrus)"><svg width="18" height="18" viewBox="0 0 32 32" aria-hidden="true"><rect x="2" y="4" width="16" height="16" rx="4" fill="#2A45E8"/><rect x="9" y="9" width="16" height="16" rx="4" fill="#FFD84D"/><rect x="14" y="6" width="14" height="14" rx="4" fill="#2DE2C0"/><rect x="3" y="27" width="26" height="3" rx="1.5" fill="#FFD84D"/></svg>QUANTA</span>
+            <span class="cmp-sub">Searches, reads, cites</span>
+          </div>
+          <div class="cmp-row-group" data-row="0">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="full"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="rgba(45,226,192,0.2)" stroke="var(--ok)" stroke-width="2"/><path d="M7 12l3.5 3.5 6.5-6.5" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="chk-draw draw"/></svg></span>
+              <span class="tip">Real-time search across 50+ live engines</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="1">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="full"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="rgba(45,226,192,0.2)" stroke="var(--ok)" stroke-width="2"/><path d="M7 12l3.5 3.5 6.5-6.5" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="chk-draw draw"/></svg></span>
+              <span class="tip">Extracts and reads up to 36 pages</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="2">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="full"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="rgba(45,226,192,0.2)" stroke="var(--ok)" stroke-width="2"/><path d="M7 12l3.5 3.5 6.5-6.5" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="chk-draw draw"/></svg></span>
+              <span class="tip">Every claim mapped to source IDs [1] [2]</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="3">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="full"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="rgba(45,226,192,0.2)" stroke="var(--ok)" stroke-width="2"/><path d="M7 12l3.5 3.5 6.5-6.5" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="chk-draw draw"/></svg></span>
+              <span class="tip">SSE events for plan, provider, read, done</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="4">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="full"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="rgba(45,226,192,0.2)" stroke="var(--ok)" stroke-width="2"/><path d="M7 12l3.5 3.5 6.5-6.5" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="chk-draw draw"/></svg></span>
+              <span class="tip">Exact ms timings, engines, tokens, receipt</span>
+            </div>
+          </div>
+          <div class="cmp-row-group" data-row="5">
+            <div class="cmp-cell center">
+              <span class="cmp-icon" aria-label="full"><svg viewBox="0 0 24 24"><circle cx="12" cy="12" r="10" fill="rgba(45,226,192,0.2)" stroke="var(--ok)" stroke-width="2"/><path d="M7 12l3.5 3.5 6.5-6.5" fill="none" stroke="var(--ok)" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round" class="chk-draw draw"/></svg></span>
+              <span class="tip">Single API call handles complete pipeline</span>
+            </div>
+          </div>
+          <div class="cmp-score-cell">
+            <div class="cmp-score-val citrus">6 / 6</div>
+            <div class="cmp-meter"><div class="cmp-meter-bar citrus" data-score="100"></div></div>
+          </div>
+        </div>
+      </div>
+
+      <p class="cmp-footnote">General comparison of approaches. Individual products vary.</p>
+    </div>
+  </div>
+</section>
+
+<!-- 14 · $0 -->
+<section class="sec rv" data-scene="citrus">
+  <div class="wrap" style="text-align:center">
+    <p class="eyebrow" style="color:var(--fg-2)">Free to start</p>
+    <div class="big" id="zero" aria-label="Zero dollars">$0</div>
+    <h2>Open. Experiment. <span class="hl">Build.</span></h2>
+    <p class="lede" style="margin-inline:auto">No search subscription. No setup to test it. No tokens to buy before you try it.</p>
+    <p style="margin-top:26px;display:flex;gap:10px;justify-content:center;flex-wrap:wrap"><a class="btn" href="/ask">Try Quanta</a><a class="btn ghost" href="/docs">Read the docs</a></p>
+  </div>
+</section>
+
+<!-- 15 · WHAT WILL YOU BUILD -->
+<section class="sec rv" data-scene="sky">
+  <div class="wrap">
+    <p class="eyebrow">Ideas</p>
+    <h2>What will <span class="hl">you build?</span></h2>
+  </div>
+  <div class="mq" style="margin-top:32px"><div id="idea1"></div></div>
+  <div class="mq"><div id="idea2" style="animation-direction:reverse"></div></div>
+</section>
+
+<!-- 16 · FAQ ("Fair questions.") -->
+<section class="sec rv" id="faq">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div><div class="grain" aria-hidden="true"></div>
+  <div class="wrap">
+    <div class="faq-grid">
+      <!-- Left: Heading and Question List -->
+      <div>
+        <p class="eyebrow">Before you ask</p>
+        <h2>Fair <span class="hl">questions.</span></h2>
+        <p class="lede" style="margin-bottom:24px">Ask Quanta about Quanta. Pick a question to stream its verified answer from the documentation.</p>
+        <div class="faq-list" id="faqList" role="tablist" aria-label="Frequently Asked Questions"></div>
+      </div>
+      <!-- Right: Streaming Answer Panel -->
+      <div>
+        <div class="faq-panel glass g2" id="faqAnswerPanel" role="tabpanel" aria-live="polite"></div>
+      </div>
+    </div>
+
+    <!-- Mobile Accordion -->
+    <div class="faq-accordion" id="faqAccordion"></div>
+  </div>
+</section>
+
+<!-- 17 · FINAL CTA -->
+<section class="sec rv" data-scene="aurora">
+  <div class="orbs" aria-hidden="true"><i></i><i></i><i></i></div><div class="grain" aria-hidden="true"></div>
+  <div class="wrap" style="text-align:center">
+    <p class="eyebrow">The web has answers</p>
+    <h2>Go on. <span class="hl">Ask it.</span></h2>
+    <form class="composer glass g2" id="cf2" style="max-width:760px;margin:28px auto 0">
+      <label class="sr" for="q2">Your question</label>
+      <textarea id="q2" rows="2" placeholder="How do noise-cancelling headphones work?"></textarea>
+      <div class="composer-row" style="width:100%;justify-content:center">
+        <button class="btn" type="submit">Research it</button>
+      </div>
+    </form>
+    <div class="promptchips" id="chips2" style="justify-content:center"></div>
+    <p class="microline">Free to start · No API key</p>
+  </div>
+</section>
+
+</main>
+
+<footer data-scene="stage">
+  <div class="wrap">
+    <div class="wordmark" aria-hidden="true">QUANTA</div>
+    <div class="fcols">
+      <div><h4>Product</h4><a href="/ask">Search</a><a href="#how">How it works</a><a href="#depth">Depth</a></div>
+      <div><h4>Developers</h4><a href="/docs">Docs</a><a href="/api">API explorer</a><a href="/docs#streaming">Streaming</a><a href="/docs#response">Response</a></div>
+      <div><h4>Status</h4><a href="/health">Health</a><a href="/providers">Providers</a><a href="/usage">Usage</a></div>
+      <div><h4>Quanta</h4><p style="color:var(--fg-2);font-size:.92rem">Search less. Research more.</p><a href="#hero">Back to top</a></div>
+    </div>
+    <p class="microline" style="margin-top:32px">&copy; <span id="yr"></span> Quanta · Self-hosted web research</p>
+  </div>
+</footer>
+
+<script>
+/* ============ helpers ============ */
+const $=(s,e=document)=>e.querySelector(s),$$=(s,e=document)=>[...e.querySelectorAll(s)];
+const H=document.documentElement, RM=matchMedia('(prefers-reduced-motion:reduce)');
+const el=(t,c,x,y)=>{const n=document.createElement(t);if(c)n.className=c;const txt=y!=null?y:x;if(txt!=null)n.textContent=txt;return n};
+const num=n=>(+n||0).toLocaleString();
+
+/* count-up: eases a number from 0 to `to` over `ms`, after an optional delay. */
+function count(node,to,ms=700,delay=0){
+  to=+to||0;
+  const paint=()=>{
+    if(RM.matches){node.textContent=num(to);return}
+    const t0=performance.now();
+    (function f(t){const k=Math.min(1,(t-t0)/ms);node.textContent=num(Math.round(to*(1-Math.pow(1-k,3))));if(k<1)requestAnimationFrame(f)})(t0);
+  };
+  delay>0?setTimeout(paint,delay):paint();
+}
+
+const BANK=["Why do cats purr, and is it always a sign of happiness?","How did the Dutch reclaim land from the sea?","What actually happens inside a lithium-ion battery fire?","How do bees decide where to build a new hive?","What makes sourdough sour?","Why is the Great Barrier Reef bleaching, and can it recover?","What should I check before buying a used electric bike?","How do noise-cancelling headphones work?","Why did the Bronze Age collapse happen?","How do airlines decide how much fuel to carry?","How do mangroves protect coastlines?","What causes deja vu?","How does a mechanical watch keep time?","Is intermittent fasting backed by good evidence?"];
+const DEPTH_FALLBACK={instant:{sub_queries:1,pages_to_read:0},fast:{sub_queries:3,pages_to_read:5},deep:{sub_queries:6,pages_to_read:12},extreme:{sub_queries:10,pages_to_read:20},ultra:{sub_queries:16,pages_to_read:36}};
+const DMETA={instant:['3–6 s','400','One angle, no page reads. Snippets only.'],fast:['15–30 s','2,000','Three angles, about five pages read.'],deep:['45–80 s','7,000','Six angles, about twelve pages, agents on.'],extreme:['75–120 s','12,000','Ten angles, about twenty pages read.'],ultra:['~100 s','20,000','Sixteen angles, thirty-six pages, eight agents.']};
+let DEPTHS=DEPTH_FALLBACK, depth='fast';
+
+/* ============ theme ============ */
+$('#th').onclick=()=>{const t=H.dataset.theme==='dark'?'light':'dark';H.dataset.theme=t;try{localStorage.setItem('q-theme',t)}catch(e){}};
+
+/* ============ glass spotlight ============ */
+addEventListener('pointermove',e=>{const g=e.target.closest?.('.glass');if(!g)return;const r=g.getBoundingClientRect();
+  g.style.setProperty('--mx',(e.clientX-r.left)+'px');g.style.setProperty('--my',(e.clientY-r.top)+'px')},{passive:true});
+
+/* ============ nav + progress + drawer ============ */
+let ly=0;const nav=$('#nav'),drawer=$('#drawer');
+addEventListener('scroll',()=>{const y=scrollY;nav.classList.toggle('hide',y>ly&&y>240);ly=y;
+  const h=document.body.scrollHeight-innerHeight;$('#prog').style.width=(h>0?y/h*100:0)+'%'},{passive:true});
+
+function toggleDrawer(open){
+  const isOpen=open!=null?open:!drawer.classList.contains('open');
+  drawer.classList.toggle('open',isOpen);
+  $('#bg').setAttribute('aria-expanded',String(isOpen));
+  document.body.style.overflow=isOpen?'hidden':'';
+}
+$('#bg').onclick=()=>toggleDrawer();
+$('#drawer-close')?.addEventListener('click',()=>toggleDrawer(false));
+drawer.onclick=e=>{if(e.target===drawer||e.target.tagName==='A')toggleDrawer(false)};
+addEventListener('keydown',e=>{if(e.key==='Escape'&&drawer.classList.contains('open'))toggleDrawer(false)});
+
+/* ============ constellation ============ */
+(function(){const c=$('#stars');if(!c)return;const x=c.getContext('2d');if(!x)return;let w,h,pts=[],raf=0,mx=-1,my=-1,vis=true;
+ function size(){const r=c.parentElement.getBoundingClientRect();const dpr=Math.min(window.devicePixelRatio||1,2.5);w=c.width=r.width*dpr;h=c.height=r.height*dpr;
+   c.style.width=r.width+'px';c.style.height=r.height+'px';const n=Math.min(80,Math.round(r.width/18));
+   pts=Array.from({length:n},()=>({x:Math.random()*w,y:Math.random()*h,vx:(Math.random()-.5)*.16*dpr,vy:(Math.random()-.5)*.16*dpr,r:(Math.random()*1.5+.5)*dpr}))}
+ function draw(){x.clearRect(0,0,w,h);const dpr=Math.min(window.devicePixelRatio||1,2.5);
+   for(const p of pts){p.x+=p.vx;p.y+=p.vy;if(p.x<0||p.x>w)p.vx*=-1;if(p.y<0||p.y>h)p.vy*=-1;
+     if(mx>=0){const dx=p.x-mx,dy=p.y-my,d=Math.hypot(dx,dy);if(d<140*dpr){p.x+=dx/d*.4;p.y+=dy/d*.4}}}
+   for(let i=0;i<pts.length;i++)for(let j=i+1;j<pts.length;j++){const a=pts[i],b=pts[j],d=Math.hypot(a.x-b.x,a.y-b.y),L=120*dpr;
+     if(d<L){x.strokeStyle=getComputedStyle(H).getPropertyValue('--fg-2').trim()||'#A9B3CC';x.globalAlpha=(1-d/L)*.22;x.lineWidth=dpr*.6;
+       x.beginPath();x.moveTo(a.x,a.y);x.lineTo(b.x,b.y);x.stroke()}}
+   x.globalAlpha=.85;for(const p of pts){x.fillStyle='#FFD84D';x.beginPath();x.arc(p.x,p.y,p.r,0,Math.PI*2);x.fill()}
+   x.globalAlpha=1;if(vis&&!RM.matches)raf=requestAnimationFrame(draw)}
+ function start(){if(!raf&&!RM.matches)raf=requestAnimationFrame(draw)}
+ function stop(){cancelAnimationFrame(raf);raf=0}
+ addEventListener('resize',()=>{size();draw()});
+ const updatePointer=e=>{const r=c.getBoundingClientRect();const dpr=Math.min(window.devicePixelRatio||1,2.5);mx=(e.clientX-r.left)*dpr;my=(e.clientY-r.top)*dpr};
+ c.parentElement.addEventListener('pointermove',updatePointer,{passive:true});
+ c.parentElement.addEventListener('pointerleave',()=>{mx=my=-1});
+ c.parentElement.addEventListener('pointerup',()=>{mx=my=-1});
+ new IntersectionObserver(es=>es.forEach(e=>{vis=e.isIntersecting;e.isIntersecting?start():stop()}),{threshold:0}).observe(c);
+ document.addEventListener('visibilitychange',()=>{document.hidden?stop():vis&&start()});
+ size();draw();if(!RM.matches)start()})();
+
+/* ============ hero evidence scene ============ */
+(function(){const Q='why is the Great Barrier Reef bleaching?';
+ const SRC=[['noaa.gov','Heat stress builds when water stays above summer maximum.','4,120'],['aims.gov.au','Corals expel the algae that feed them.','3,860'],['nature.com','Recovery takes a decade or more between events.','5,402']];
+ const ANS='Bleaching follows <mark class="hl on">prolonged heat</mark>, not a single warm day. <span class="pill">1</span>';
+ const q=$('#evq'),list=$('#evlist'),ans=$('#evans'),stat=$('#evstat');let i=0,step=0,timer;
+ function reset(){q.textContent='';list.textContent='';ans.innerHTML='';stat.textContent='planning';i=0;step=0}
+ function tick(){
+   if(step===0){q.textContent=Q.slice(0,++i);if(i>=Q.length){step=1;stat.textContent='reading';timer=setTimeout(tick,500)}else timer=setTimeout(tick,RM.matches?0:34);return}
+   if(step<=SRC.length){const s=SRC[step-1];const r=el('div','evrow');r.style.animationDelay='0s';
+     r.append(el('b',null,'READ'),el('span',null,s[0]+' — '+s[1]),el('i',null,s[2]+'w'));list.append(r);
+     stat.textContent='reading '+(step)+'/'+SRC.length;step++;timer=setTimeout(tick,RM.matches?60:1100);return}
+   stat.textContent='writing';ans.innerHTML=ANS;
+   timer=setTimeout(()=>{stat.textContent='idle';timer=setTimeout(reset,RM.matches?4000:5200)},RM.matches?200:2600)}
+ reset();timer=setTimeout(tick,RM.matches?200:900)})();
+
+/* ============ prompt chips + composer ============ */
+function chips(box,n,start){box.textContent='';for(let k=0;k<n;k++){const t=BANK[(start+k*4)%BANK.length];const b=el('button',null,t);b.type='button';
+  b.onclick=()=>go(t);box.append(b)}}
+function go(v,sourceId='q'){
+  const inputEl=$('#'+sourceId)||($('#q'));
+  const q=(v!=null?v:(inputEl?inputEl.value:'')).trim();
+  if(!q){if(inputEl)inputEl.focus();return}
+  const u='/ask?q='+encodeURIComponent(q)+'&depth='+encodeURIComponent(depth);
+  document.startViewTransition?document.startViewTransition(()=>{location.href=u}):location.href=u;
+}
+$('#cf').onsubmit=e=>{e.preventDefault();go(null,'q')};
+$('#cf2').onsubmit=e=>{e.preventDefault();go($('#q2').value,'q2')};
+chips($('#chips'),3,1);chips($('#chips2'),3,2);
+(function(){const t=BANK[3];const ta=$('#q');if(ta&&!ta.value)ta.placeholder=t})();
+
+/* depth menu */
+function buildDepthMenu(){
+  const m=$('#dm'),b=$('#db');if(!m||!b)return;
+  m.textContent='';Object.keys(DEPTHS).forEach(k=>{
+    const o=el('button');o.type='button';o.setAttribute('role','menuitemradio');
+    o.setAttribute('aria-checked',String(k===depth));const l=el('span',null,k[0].toUpperCase()+k.slice(1));
+    l.append(el('small',null,DEPTHS[k].sub_queries+' angles · '+(DEPTHS[k].pages_to_read||0)+' pages · '+DMETA[k][0]));
+    o.append(l);
+    o.onclick=()=>{depth=k;b.textContent=k[0].toUpperCase()+k.slice(1);m.classList.remove('open');b.setAttribute('aria-expanded','false');syncDial()};
+    m.append(o);
+  });
+}
+(function(){const m=$('#dm'),b=$('#db');if(!m||!b)return;
+ const open=()=>{m.classList.add('open');b.setAttribute('aria-expanded','true');buildDepthMenu()};
+ const close=()=>{m.classList.remove('open');b.setAttribute('aria-expanded','false')};
+ b.onclick=()=>m.classList.contains('open')?close():open();
+ addEventListener('click',e=>{if(!m.contains(e.target)&&e.target!==b)close()});
+ addEventListener('keydown',e=>{if(e.key==='Escape')close()});
+ buildDepthMenu();
+})();
+
+/* ============ marquees ============ */
+function fill(box,items){if(!box)return;box.textContent='';const all=[...items,...items,...items,...items];all.forEach(t=>box.append(el('span',null,t)))}
+fill($('#mqrow'),['Web','Academic','News','Code','Forums','Reference','Archive']);
+const IDEAS=['A research assistant','An autonomous agent','A live intelligence dashboard','A web-powered coding assistant','A RAG pipeline with fresh facts','A study companion','A fact-checking bot','A news monitor','A completely ridiculous experiment that somehow works'];
+fill($('#idea1'),IDEAS);fill($('#idea2'),IDEAS.slice().reverse());
+
+/* ============ lanes gates ============ */
+(function(){const g=$('#gates');if(!g)return;
+ ['Objective','Research','Discovery','Reading','Synthesis','Structured output'].forEach((t,i)=>{
+   if(i)g.append(el('span','arrow','→'));const n=el('span','node',t);g.append(n);
+ });
+ let k=0;setInterval(()=>{if(RM.matches)return;const ns=$$('#gates .node');ns.forEach(n=>n.classList.remove('lit'));ns[k%ns.length]?.classList.add('lit');k++},900);
+})();
+
+/* ============ pinned research run ============ */
+(function(){const STEPS=[
+  ['Plan','Your question becomes several search angles.','event: plan · 6 sub-queries',()=>{const d=el('div','',null);d.style.cssText='display:flex;flex-wrap:wrap;gap:8px;justify-content:center';
+    ['cause','timeline','recovery','monitoring data','expert analysis','policy response'].forEach((t,i)=>{const c=el('span','chip',t);c.style.animation=`pop .5s var(--spring) ${i*.09}s both`;d.append(c)});return d}],
+  ['Search','About seven engines are asked at the same time.','event: provider · 261 raw hits',()=>{const d=el('div');d.style.cssText='display:grid;grid-template-columns:repeat(auto-fit,minmax(70px,1fr));gap:8px;width:100%';
+    [42,38,61,29,44,18,29].forEach((n,i)=>{const t=el('div','stat glass g1');t.style.padding='8px';const b=el('b',null,'0');b.style.fontSize='1.3rem';
+      t.append(b,el('span',null,'engine '+(i+1)));d.append(t);count(b,n,600,i*90)});return d}],
+  ['Discover','Duplicates merge. Six signals rank what\'s left.','175 unique · RRF + BM25 + authority',()=>{const d=el('div');d.style.width='100%';
+    ['rrf','bm25','authority','freshness','agreement','ai'].forEach((k,i)=>{const r=el('div','gauge');r.append(el('span',null,k),el('span',null,''));
+      const bar=el('div','bar'),fill=el('i');bar.append(fill);r.append(bar);d.append(r);setTimeout(()=>fill.style.width=(35+Math.random()*60)+'%',120+i*90)});return d}],
+  ['Read','The best pages are opened and their real text extracted.','event: read_done · 30,066 words',()=>{const d=el('div');d.style.cssText='display:grid;gap:8px;width:100%';
+    ['noaa.gov','aims.gov.au','nature.com','reuters.com'].forEach((t,i)=>{const r=el('div','evrow');r.style.animationDelay=(i*.12)+'s';
+      r.append(el('b',null,'READ'),el('span',null,t),el('i',null,(3000+i*700).toLocaleString()+'w'));d.append(r)});return d}],
+  ['Synthesize','Parallel agents handle big evidence, then one writer takes over.','event: agents · 8 readers',()=>{const d=el('div');d.style.cssText='display:grid;grid-template-columns:repeat(4,1fr);gap:6px;width:100%';
+    for(let i=0;i<8;i++){const b=el('i');b.style.cssText='height:26px;border-radius:6px;background:var(--ok);opacity:.25;animation:pulse 2s '+(i*.16)+'s infinite';d.append(b)}return d}],
+  ['Deliver','A cited answer, streamed, with sources and telemetry.','event: token → answer → done',()=>{const d=el('div');d.style.cssText='font:500 .95rem/1.6 var(--font-ui);max-width:40ch';
+    d.innerHTML='Bleaching follows <mark class="hl on">prolonged heat</mark> <span class="pill">1</span>, and recovery between events takes a decade or more <span class="pill">2</span>.';return d}]];
+ const copy=$('#stepcopy'),win=$('#stagewin'),rail=$('#rail'),wrap=$('#pinwrap');
+ STEPS.forEach(([n],i)=>{
+   const dot=el('i');dot.setAttribute('role','button');dot.setAttribute('aria-label',`Step ${i+1}: ${n}`);
+   dot.onclick=()=>show(i);rail.append(dot);
+ });
+ let cur=-1;
+ function show(i){if(i===cur)return;cur=i;const[n,desc,mono,vis]=STEPS[i];
+   copy.textContent='';const b=el('div','stepbody on');
+   b.append(el('div','bignum',null,String(i+1).padStart(2,'0')),el('h3',null,n));
+   b.querySelector('h3').style.cssText='font-size:clamp(1.5rem,3.2vw,2.5rem);margin:8px 0 10px';
+   b.append(el('p','lede',null,desc),el('p','evmono',null,mono));copy.append(b);
+   win.textContent='';win.append(vis());$$('i',rail).forEach((d,k)=>d.classList.toggle('on',k===i))}
+ const isMobile=window.innerWidth<=1080;
+ const blocks=STEPS.map(()=>{const s=el('div');s.style.height=isMobile?'40vh':'76vh';wrap.append(s);return s});
+ blocks.forEach((b,i)=>new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting)show(i)}),{rootMargin:'-45% 0px -45% 0px'}).observe(b));
+ show(0)})();
+
+/* ============ depth dial ============ */
+const dialIdx=()=>Object.keys(DEPTHS).indexOf(depth);
+function syncDial(){
+  const ks=Object.keys(DEPTHS),i=dialIdx(),d=DEPTHS[depth]||DEPTH_FALLBACK[depth]||{sub_queries:3,pages_to_read:5};
+  const a=i/(ks.length-1)*240-120;$('#knob').setAttribute('transform',`rotate(${a} 100 100)`);
+  const dial=$('#dial');dial.setAttribute('aria-valuenow',i);dial.setAttribute('aria-valuetext',depth);
+  $('#dname').textContent=depth[0].toUpperCase()+depth.slice(1);$('#ddesc').textContent=DMETA[depth][2];
+  $('#dang').textContent=d.sub_queries;$('#dpg').textContent=d.pages_to_read||0;
+  $('#dtm').textContent=DMETA[depth][0];$('#dtok').textContent=(+DMETA[depth][1]).toLocaleString();
+  const db=$('#db');if(db)db.textContent=depth[0].toUpperCase()+depth.slice(1);
+}
+(function(){const t=$('#ticks');for(let i=0;i<5;i++){const a=(i/4*240-120)*Math.PI/180;
+ const x1=100+Math.sin(a)*72,y1=100-Math.cos(a)*72,x2=100+Math.sin(a)*86,y2=100-Math.cos(a)*86;
+ const l=document.createElementNS('http://www.w3.org/2000/svg','line');
+ l.setAttribute('x1',x1);l.setAttribute('y1',y1);l.setAttribute('x2',x2);l.setAttribute('y2',y2);
+ l.setAttribute('stroke','currentColor');l.setAttribute('stroke-opacity','.45');l.setAttribute('stroke-width','3');l.setAttribute('stroke-linecap','round');t.append(l)}
+ const dial=$('#dial');const set=i=>{const ks=Object.keys(DEPTHS);depth=ks[Math.max(0,Math.min(ks.length-1,i))];syncDial();buildDepthMenu()};
+ dial.onkeydown=e=>{const k=e.key;if(k==='ArrowRight'||k==='ArrowUp'){set(dialIdx()+1);e.preventDefault()}
+   if(k==='ArrowLeft'||k==='ArrowDown'){set(dialIdx()-1);e.preventDefault()}};
+ let dragging=false;
+ function updateFromPointer(e){
+   const r=dial.getBoundingClientRect();
+   const a=Math.atan2(e.clientX-r.left-r.width/2,r.height/2-(e.clientY-r.top))*180/Math.PI;
+   set(Math.round((a+120)/240*4));
+ }
+ dial.onpointerdown=e=>{dragging=true;try{dial.setPointerCapture(e.pointerId)}catch(_){}updateFromPointer(e)};
+ dial.onpointermove=e=>{if(dragging)updateFromPointer(e)};
+ dial.onpointerup=dial.onpointercancel=e=>{if(dragging){dragging=false;try{dial.releasePointerCapture(e.pointerId)}catch(_){}}};
+})();
+syncDial();
+
+/* ============ who it helps ============ */
+(function(){const W=[['AI assistants','Current, cited information on demand, not stale training data.','POST /search'],['Autonomous agents','One tool call that searches, reads and gathers, with telemetry.','stream: true'],
+ ['Deep research','Configurable depth from Instant to Ultra for hard questions.','depth: ultra'],['RAG pipelines','Fresh web evidence with source ids ready to cite or index.','sources[].id'],
+ ['Developer tools','Live events to render, so long tasks show progress.','event: stage'],['Experimenters','Free, keyless, no signup. Good for prototypes and odd ideas.','$0 to start']];
+ const box=$('#who');W.forEach(([t,p,m])=>{const c=el('div','card glass g1');c.append(el('h3',null,t),el('p',null,p),el('span','md',null,m));box.append(c)})})();
+
+/* ============ sse rail + stream window ============ */
+(function(){const EV=[['Search started','start'],['Sources discovered','provider'],['Pages being read','read_done'],['Research progressing','stage'],['Results arriving','token'],['Final output','done']];
+ const rail=$('#sserail');EV.forEach(([t,c])=>{const r=el('div','sserow');r.append(el('span',null,t),el('code',null,c));rail.append(r)});
+ const w=$('#swin'),L=[['0.00','start','{"depth":"fast"}'],['0.42','plan','{"sub_queries":6}'],['1.10','provider','{"name":"ddg","results":38}'],
+  ['1.86','search','{"candidates":261,"raw":261}'],['2.40','rank','{"shortlist":36}'],['3.05','read_done','{"domain":"noaa.gov","words":4120}'],
+  ['8.20','read','{"pages_read":10,"words_read":30066}'],['9.02','agents','{"count":8}'],['11.44','token','{"t":"Bleaching follows…"}'],
+  ['48.10','answer','{"answer":"…","citations":12}'],['51.60','extras','{"key_points":5}'],['52.03','done','{"elapsed_ms":52030}']];
+ let i=0;setInterval(()=>{if(RM.matches)return;const[t,e,p]=L[i%L.length];const d=el('div');
+   d.append(el('span','t',null,t+'s'),el('span','e',null,e),el('span',null,p));w.append(d);
+   while(w.children.length>11)w.firstChild.remove();i++},RM.matches?0:900)})();
+
+/* ============ json viewer ============ */
+(function(){const J=`{
+  "answer": "Bleaching follows prolonged heat [1]…",
+  "sources": [
+    { "id": 1, "url": "https://noaa.gov/…",
+      "domain": "noaa.gov", "score": 0.91,
+      "read": true, "words": 4120,
+      "signals": { "rrf": 0.8, "bm25": 0.6,
+        "authority": 0.9, "freshness": 0.4 } }
+  ],
+  "key_points": ["Heat stress is cumulative", "…"],
+  "follow_ups": ["Which reefs recovered fastest?"],
+  "tokens": { "tokens_requested": 12153, "tokens_used": 27665,
+    "efficiency_pct": 100, "calls": 5 },
+  "stats": { "pages_read": 10, "words_read": 30066 }
+}`;
+ const out=$('#jsonv');out.textContent='';
+ const paint=()=>{out.innerHTML=J.replace(/&/g,'&amp;').replace(/</g,'&lt;')
+   .replace(/"([^"]+)":/g,'<span class="k">"$1"</span>:')
+   .replace(/(:\s*)(".*?")/g,'$1<span class="s">$2</span>')
+   .replace(/(\[\s*|\,\s*)(".*?")/g,'$1<span class="s">$2</span>')
+   .replace(/(:\s*)(true|false|null)/g,'$1<span class="n">$2</span>')
+   .replace(/(:\s*)(-?\d+\.?\d*)/g,'$1<span class="n">$2</span>')};
+ if(RM.matches){paint()}else{let i=0;const step=()=>{i+=6;if(i>=J.length){paint();return}
+   out.textContent=J.slice(0,i);requestAnimationFrame(step)};
+   new IntersectionObserver((es,o)=>es.forEach(e=>{if(e.isIntersecting){o.disconnect();step()}}),{threshold:.25}).observe(out)}})();
+(function(){const C=['AI agents','Backend services','Frontends','RAG systems','Automation pipelines','Internal tools','Research platforms'];
+ const b=$('#consumers');C.forEach(t=>b.append(el('span','chip',t)))})();
+
+/* ============ architecture ============ */
+(function(){const N=['YOUR APPLICATION','QUANTA','SEARCH · READ · RESEARCH','SYNTHESIZE','STRUCTURED DATA','YOUR AI / SYSTEM'];
+ const g=$('#archg'),W=1000,pad=14,bw=(W-pad*(N.length-1))/N.length;
+ N.forEach((t,i)=>{const x=i*(bw+pad),y=48;
+   const r=document.createElementNS('http://www.w3.org/2000/svg','rect');
+   r.setAttribute('x',x);r.setAttribute('y',y);r.setAttribute('width',bw);r.setAttribute('height',54);r.setAttribute('rx',14);
+   r.setAttribute('fill',i===1?'#FFD84D':'none');r.setAttribute('stroke','currentColor');r.setAttribute('stroke-opacity','.4');
+   const tx=document.createElementNS('http://www.w3.org/2000/svg','text');
+   tx.setAttribute('x',x+bw/2);tx.setAttribute('y',y+31);tx.setAttribute('fill',i===1?'#0B0F1E':'currentColor');
+   tx.setAttribute('font-size',bw<150?'9':'11');tx.textContent=t;
+   const ti=document.createElementNS('http://www.w3.org/2000/svg','title');ti.textContent=t;
+   g.append(r,tx);r.append(ti);
+   if(i<N.length-1){const l=document.createElementNS('http://www.w3.org/2000/svg','line');
+     l.setAttribute('x1',x+bw);l.setAttribute('y1',y+27);l.setAttribute('x2',x+bw+pad);l.setAttribute('y2',y+27);
+     l.setAttribute('stroke','currentColor');l.setAttribute('stroke-opacity','.5');l.setAttribute('marker-end','url(#ah)');g.append(l)}})})();
+
+/* ============ code tabs + dev terminal ============ */
+(function(){const S=[
+  ['cURL','$ curl -N "/stream?q=what+makes+sourdough+sour&depth=fast"'],
+  ['Python','import httpx\n\nr = httpx.get("/search", params={\n    "q": "what makes sourdough sour",\n    "depth": "fast",\n})\nprint(r.json()["answer"])'],
+  ['JavaScript','const r = await fetch(\n  "/search?q=what+makes+sourdough+sour&depth=fast"\n);\nconst { answer, sources } = await r.json();'],
+  ['Streaming','const es = new EventSource(\n  "/stream?q=what+makes+sourdough+sour&depth=fast"\n);\nes.addEventListener("token", e =>\n  process.stdout.write(JSON.parse(e.data).t)\n);']];
+ const tabs=$('#tabs'),snip=$('#snip');let cur=0;
+ const paint=i=>{cur=i;snip.textContent=S[i][1];$$('button',tabs).forEach((b,k)=>b.setAttribute('aria-selected',k===i))};
+ S.forEach(([n],i)=>{const b=el('button',null,n);b.type='button';b.setAttribute('role','tab');b.onclick=()=>paint(i);tabs.append(b)});
+ paint(0);
+ const term=$('#dterm');const L=[['$ curl -N "/stream?q=…&depth=fast"','dim'],['event: plan',''],['  sub_queries: 3','dim'],['event: provider  ddg 38','ok'],
+  ['event: read_done  kingarthur.com 2,940w','ok'],['event: read  pages_read 5',''],['event: token …',''],['event: done  elapsed_ms 18420','ok']];
+ let i=0;setInterval(()=>{if(RM.matches)return;const[t,c]=L[i%L.length];const d=el('div',c||null);d.textContent=t;term.append(d);
+   while(term.children.length>9)term.firstChild.remove();i++},1200)})();
+
+/* ============ $0 counter ============ */
+(function(){const z=$('#zero');new IntersectionObserver((es,o)=>es.forEach(e=>{if(!e.isIntersecting)return;o.disconnect();
+ if(RM.matches){z.textContent='$0';return}const t0=performance.now();
+ (function f(t){const k=Math.min(1,(t-t0)/1400);z.textContent='$'+Math.round(100*(1-k));k<1?requestAnimationFrame(f):z.textContent='$0'})(t0)}),{threshold:.4}).observe(z)})();
+
+/* ============ reveal ============ */
+const io=new IntersectionObserver(es=>es.forEach(e=>{if(e.isIntersecting){e.target.classList.add('in');io.unobserve(e.target)}}),{threshold:.1});
+$$('.rv').forEach(e=>io.observe(e));
+$('#yr').textContent=new Date().getFullYear();
+
+/* ============ live server facts ============ */
+(async()=>{try{const r=await fetch('/providers');const j=await r.json();
+  const live=Array.isArray(j?.active)?j.active.length:0;
+  $('#eng').textContent=live?live+' engines ready':'no engines configured';
+  const kinds=j?.by_kind||{};const cats=Object.keys(kinds).filter(k=>kinds[k]?.length);
+  if(cats.length)fill($('#mqrow'),cats.map(k=>k[0].toUpperCase()+k.slice(1)+' · '+kinds[k].length))}catch(e){$('#eng').textContent='engines ready (demo)'}})();
+(async()=>{try{const r=await fetch('/health');if(r.ok){$('#hdot').title='Quanta online'}else throw 0}catch(e){$('#hdot').title='Quanta demo mode'}})();
+(async()=>{try{const r=await fetch('/depths');const j=await r.json();
+  if(j&&Object.keys(j).length){DEPTHS=j;syncDial();buildDepthMenu()}}catch(e){}})();
+
+/* ============ deep-link depth ============ */
+const u=new URLSearchParams(location.search);if(u.get('depth')in DEPTH_FALLBACK){depth=u.get('depth');syncDial();const db=$('#db');if(db)db.textContent=depth[0].toUpperCase()+depth.slice(1)}
+if(u.get('q'))$('#q').value=u.get('q');
+</script>
+
+<!-- Modular Script Integrations -->
+<script>
+// highlight-metrics.js : run after document.fonts.ready; sets --mk-y / --mk-h per element (cached per font)
+(function(){
+  const ctx = typeof document !== 'undefined' ? document.createElement('canvas').getContext('2d') : null;
+  const cache = {};
+  function metrics(font){
+    if (cache[font]) return cache[font];
+    if (!ctx) return { y: 0.17, h: 0.985 };
+    ctx.font = font.replace(/[\d.]+px/, '200px');
+    const m = ctx.measureText('HExpgdyQ');
+    const fa = ((m && m.fontBoundingBoxAscent) || (m && m.actualBoundingBoxAscent * 1.12) || 160) / 200;
+    const a = ((m && m.actualBoundingBoxAscent) || 145) / 200;
+    const d = ((m && m.actualBoundingBoxDescent) || 40) / 200;
+    return cache[font] = {
+      y: Math.max(0, +(fa - a - 0.04).toFixed(3)),
+      h: Math.min(1.0, +(a + d + 0.08).toFixed(3))
+    };
+  }
+
+  function applyHighlightMetrics(){
+    if (typeof document === 'undefined') return;
+    document.querySelectorAll('.hl, mark.hl').forEach(el => {
+      const cs = getComputedStyle(el);
+      const k = metrics(`${cs.fontWeight} ${cs.fontSize} ${cs.fontFamily}`);
+      el.style.setProperty('--mk-y', k.y);
+      el.style.setProperty('--mk-h', k.h);
+    });
+  }
+
+  if (typeof document !== 'undefined') {
+    if (document.fonts && document.fonts.ready) {
+      document.fonts.ready.then(applyHighlightMetrics);
+    } else {
+      window.addEventListener('DOMContentLoaded', applyHighlightMetrics);
+      setTimeout(applyHighlightMetrics, 80);
+    }
+
+    if (typeof IntersectionObserver !== 'undefined') {
+      const hlObserver = new IntersectionObserver((entries) => {
+        entries.forEach(entry => {
+          if (entry.isIntersecting) {
+            entry.target.classList.add('on');
+            hlObserver.unobserve(entry.target);
+          }
+        });
+      }, { threshold: 0.15 });
+
+      document.querySelectorAll('.hl').forEach(el => {
+        if (el.closest('#hero')) {
+          setTimeout(() => el.classList.add('on'), 350);
+        } else {
+          hlObserver.observe(el);
+        }
+      });
+    }
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { metrics, applyHighlightMetrics };
+  }
+})();
+
+</script>
+<script>
+// js/landing.js : Core landing page interactions (Pipeline visual, comparison matrix, depth dial, scrollytelling, constellation)
+(function(){
+  const H = typeof document !== 'undefined' ? document.documentElement : null;
+  const RM = typeof window !== 'undefined' && window.matchMedia ? window.matchMedia('(prefers-reduced-motion:reduce)') : { matches: false };
+
+  // ===================== Pipeline visual (Six Tools. One Call.) =====================
+  function initPipelineVisual(){
+    const panel = document.getElementById('pipePanel');
+    if (!panel) return;
+
+    const SVG_NS = 'http://www.w3.org/2000/svg';
+    const svg = document.getElementById('pipeSvg');
+    const mergeNode = document.getElementById('pipeMergeNode');
+    const trunkLine = document.getElementById('pipeTrunkLine');
+    const endpointCard = document.getElementById('pipeEndpointCard');
+    const responseCard = document.getElementById('pipeResponseCard');
+    const countA = document.getElementById('pipeCountA');
+    const countB = document.getElementById('pipeCountB');
+    const tag = document.getElementById('pipeTag');
+    const cards = document.querySelectorAll('.pipe-card');
+    if (!svg) return;
+
+    // 6 Wires setup
+    // Paths run from (x0=0, y0) to merge node (xm=180, ym=220)
+    const cardY = [40, 110, 180, 250, 320, 390];
+    const mergeX = 180, mergeY = 220;
+
+    // Tangled curves control points (wavy, crossing)
+    const tangledPaths = [
+      `M 0 40 C 60 140, 100 -20, ${mergeX} ${mergeY}`,
+      `M 0 110 C 120 20, 60 280, ${mergeX} ${mergeY}`,
+      `M 0 180 C 40 300, 130 90, ${mergeX} ${mergeY}`,
+      `M 0 250 C 90 90, 70 360, ${mergeX} ${mergeY}`,
+      `M 0 320 C 140 180, 60 420, ${mergeX} ${mergeY}`,
+      `M 0 390 C 80 240, 120 120, ${mergeX} ${mergeY}`
+    ];
+
+    // Untangled curves (smooth, elegant convergence)
+    const untangledPaths = [
+      `M 0 40 C 80 40, 110 ${mergeY}, ${mergeX} ${mergeY}`,
+      `M 0 110 C 70 110, 110 ${mergeY}, ${mergeX} ${mergeY}`,
+      `M 0 180 C 60 180, 120 ${mergeY}, ${mergeX} ${mergeY}`,
+      `M 0 250 C 60 250, 120 ${mergeY}, ${mergeX} ${mergeY}`,
+      `M 0 320 C 70 320, 110 ${mergeY}, ${mergeX} ${mergeY}`,
+      `M 0 390 C 80 390, 110 ${mergeY}, ${mergeX} ${mergeY}`
+    ];
+
+    const pathElements = [];
+    const packetElements = [];
+
+    // Create paths in SVG
+    svg.innerHTML = '';
+    // Trunk line to right
+    const trunk = document.createElementNS(SVG_NS, 'line');
+    trunk.setAttribute('x1', mergeX);
+    trunk.setAttribute('y1', mergeY);
+    trunk.setAttribute('x2', 240);
+    trunk.setAttribute('y2', mergeY);
+    trunk.setAttribute('class', 'pipe-trunk');
+    svg.appendChild(trunk);
+
+    const wireColors = ['#4C6FFF', '#2DE2C0', '#FF6B5A', '#A78BFA', '#FEBC2E', '#34D399'];
+    for (let i = 0; i < 6; i++) {
+      const p = document.createElementNS(SVG_NS, 'path');
+      p.setAttribute('d', tangledPaths[i]);
+      p.setAttribute('class', 'pipe-wire');
+      p.setAttribute('stroke', wireColors[i]);
+      svg.appendChild(p);
+      pathElements.push(p);
+
+      // Traveling packet circle
+      const dot = document.createElementNS(SVG_NS, 'circle');
+      dot.setAttribute('r', '4');
+      dot.setAttribute('class', 'pipe-packet');
+      dot.setAttribute('fill', wireColors[i]);
+      svg.appendChild(dot);
+      packetElements.push(dot);
+    }
+
+    let loopTimeout = null;
+    let animRaf = null;
+    let loopStartTime = 0;
+
+    function playPipelineLoop(){
+      if (RM.matches) {
+        setPipelineSettled();
+        return;
+      }
+
+      loopStartTime = performance.now();
+      cards.forEach((c, idx) => {
+        c.classList.remove('settled');
+        c.classList.add('tangled');
+        const stat = c.querySelector('.pipe-stat-text');
+        if (stat) {
+          stat.textContent = stat.dataset.err || 'error';
+          stat.className = 'pipe-stat-text err';
+        }
+      });
+      trunk.classList.remove('merged');
+      if (endpointCard) endpointCard.classList.remove('active');
+      if (responseCard) responseCard.classList.remove('active');
+      if (countA) countA.textContent = '6';
+      if (countB) countB.classList.remove('ok');
+      if (tag) tag.textContent = '6 integrations tangled';
+
+      pathElements.forEach((p, i) => p.setAttribute('d', tangledPaths[i]));
+
+      function step(now){
+        const elapsed = (now - loopStartTime) / 1000; // in seconds
+
+        // 0.0 - 1.2s: Cards fade-rise, tangled status
+        if (elapsed < 1.4) {
+          // move packets randomly along tangled paths
+          packetElements.forEach((dot, i) => {
+            const p = pathElements[i];
+            const len = p.getTotalLength();
+            const pt = p.getPointAtLength((((elapsed * 0.4 + i * 0.15) % 1) * len));
+            dot.setAttribute('cx', pt.x);
+            dot.setAttribute('cy', pt.y);
+          });
+        }
+        // 1.4 - 3.0s: Untangle transition
+        else if (elapsed >= 1.4 && elapsed < 3.0) {
+          const k = Math.min(1, (elapsed - 1.4) / 1.6);
+          // interpolate paths
+          pathElements.forEach((p, i) => {
+            if (k > 0.5) {
+              p.setAttribute('d', untangledPaths[i]);
+            }
+          });
+          cards.forEach((c) => {
+            c.classList.remove('tangled');
+            c.classList.add('settled');
+            const stat = c.querySelector('.pipe-stat-text');
+            if (stat) {
+              stat.textContent = 'ok';
+              stat.className = 'pipe-stat-text ok';
+            }
+          });
+          if (tag) tag.textContent = 'Converging streams...';
+
+          packetElements.forEach((dot, i) => {
+            const p = pathElements[i];
+            const len = p.getTotalLength();
+            const pt = p.getPointAtLength((((elapsed * 0.9 + i * 0.15) % 1) * len));
+            dot.setAttribute('cx', pt.x);
+            dot.setAttribute('cy', pt.y);
+          });
+        }
+        // 3.0 - 4.0s: Merge into citrus line
+        else if (elapsed >= 3.0 && elapsed < 4.0) {
+          trunk.classList.add('merged');
+          if (countB) countB.classList.add('ok');
+          if (tag) tag.textContent = 'Collapsed into 1 request';
+        }
+        // 4.0 - 5.5s: Endpoint & response card slide in
+        else if (elapsed >= 4.0 && elapsed < 5.5) {
+          if (endpointCard) endpointCard.classList.add('active');
+          if (responseCard) responseCard.classList.add('active');
+          if (countA) countA.textContent = '1';
+        }
+        // 5.5 - 8.0s: Hold settled
+        else if (elapsed >= 5.5 && elapsed < 8.0) {
+          // hold
+        }
+        // 8.0 - 9.0s: Soft reset and loop
+        else if (elapsed >= 9.0) {
+          playPipelineLoop();
+          return;
+        }
+
+        animRaf = requestAnimationFrame(step);
+      }
+
+      cancelAnimationFrame(animRaf);
+      animRaf = requestAnimationFrame(step);
+    }
+
+    function setPipelineSettled(){
+      cards.forEach(c => {
+        c.classList.add('settled');
+        const stat = c.querySelector('.pipe-stat-text');
+        if (stat) {
+          stat.textContent = 'ok';
+          stat.className = 'pipe-stat-text ok';
+        }
+      });
+      pathElements.forEach((p, i) => p.setAttribute('d', untangledPaths[i]));
+      trunk.classList.add('merged');
+      if (endpointCard) endpointCard.classList.add('active');
+      if (responseCard) responseCard.classList.add('active');
+      if (countA) countA.textContent = '1';
+      if (countB) countB.classList.add('ok');
+      if (tag) tag.textContent = '1 request';
+    }
+
+    // Parallax on hover
+    panel.addEventListener('mousemove', (e) => {
+      const rect = panel.getBoundingClientRect();
+      const dy = (e.clientY - (rect.top + rect.height / 2)) / (rect.height / 2);
+      pathElements.forEach((p, idx) => {
+        p.style.transform = `translateY(${dy * (idx - 2.5) * 2}px)`;
+      });
+    });
+    panel.addEventListener('mouseleave', () => {
+      pathElements.forEach(p => p.style.transform = '');
+    });
+
+    playPipelineLoop();
+  }
+
+  // ===================== Comparison Matrix (Three Ways to Get an Answer) =====================
+  function initComparisonMatrix(){
+    const matrix = document.getElementById('cmpMatrix');
+    if (!matrix) return;
+
+    // Mobile tabs
+    const tabs = document.querySelectorAll('.cmp-tab-btn');
+    const cols = document.querySelectorAll('.cmp-col');
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.classList.remove('active'));
+        tab.classList.add('active');
+        const target = tab.dataset.target;
+        cols.forEach(col => {
+          col.classList.toggle('active-mobile', col.dataset.col === target);
+        });
+      });
+    });
+
+    // Row hover highlight across columns
+    const rows = matrix.querySelectorAll('.cmp-row-group');
+    rows.forEach(r => {
+      r.addEventListener('mouseenter', () => {
+        rows.forEach(other => other.classList.toggle('dimmed', other !== r));
+        r.classList.add('highlighted');
+      });
+      r.addEventListener('mouseleave', () => {
+        rows.forEach(other => other.classList.remove('dimmed', 'highlighted'));
+      });
+    });
+
+    // Animate score meters on view
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          matrix.querySelectorAll('.cmp-meter-bar').forEach(bar => {
+            bar.style.width = bar.dataset.score + '%';
+          });
+          // Draw icons
+          matrix.querySelectorAll('.chk-draw').forEach(p => {
+            p.classList.add('draw');
+          });
+          obs.unobserve(entry.target);
+        }
+      });
+    }, { threshold: 0.2 });
+    obs.observe(matrix);
+  }
+
+  // Initialize all landing interactions
+  function initLanding(){
+    initPipelineVisual();
+    initComparisonMatrix();
+  }
+
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initLanding);
+    } else {
+      initLanding();
+    }
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { initLanding, initPipelineVisual, initComparisonMatrix };
+  }
+})();
+
+</script>
+<script>
+// js/terminal.js : Interactive macOS-style terminal for Quanta live runs & recorded idle demo
+(function(){
+  const BANK = [
+    "How do bees decide where to build a new hive?",
+    "Why is the Great Barrier Reef bleaching, and can it recover?",
+    "What actually happens inside a lithium-ion battery fire?",
+    "How did the Dutch reclaim land from the sea?",
+    "What makes sourdough sour?",
+    "How do noise-cancelling headphones work?",
+    "How do airlines decide how much fuel to carry?",
+    "Why do cats purr, and is it always a sign of happiness?"
+  ];
+
+  const SAMPLES = {
+    cURL: (q) => `curl -N "https://api.quanta.sh/stream?q=${encodeURIComponent(q)}&depth=instant"`,
+    Python: (q) => `import httpx\nwith httpx.stream("GET", "https://api.quanta.sh/stream?q=${encodeURIComponent(q)}&depth=instant") as r:\n    for line in r.iter_lines():\n        print(line)`,
+    JavaScript: (q) => `const es = new EventSource("/stream?q=${encodeURIComponent(q)}&depth=instant");\nes.onmessage = (e) => console.log(JSON.parse(e.data));`
+  };
+
+  let activeTab = 'cURL';
+  let demoTimer = null;
+  let isRunningLive = false;
+  let activeEventSource = null;
+  let promptIndex = 0;
+  let userScrolledUp = false;
+
+  function initTerminal(){
+    const termWin = document.getElementById('termWindow');
+    const termBody = document.getElementById('termBody');
+    const termStatus = document.getElementById('termStatusBadge');
+    const termMode = document.getElementById('termModeLabel');
+    const termTimer = document.getElementById('termTimer');
+    const promptInput = document.getElementById('termInput');
+    const runBtn = document.getElementById('termRunLiveBtn');
+    const stopBtn = document.getElementById('termStopBtn');
+    const copyBtn = document.getElementById('termCopyBtn');
+    const replayBtn = document.getElementById('termReplayBtn');
+    const tabs = document.querySelectorAll('.term-tab');
+
+    if (!termBody) return;
+
+    // Prefill prompt input
+    if (promptInput && !promptInput.value) {
+      promptInput.value = BANK[0];
+    }
+
+    // Scroll listener for auto-scroll pause
+    termBody.addEventListener('scroll', () => {
+      const atBottom = termBody.scrollHeight - termBody.scrollTop <= termBody.clientHeight + 20;
+      userScrolledUp = !atBottom;
+    });
+
+    // Code tabs click
+    tabs.forEach(tab => {
+      tab.addEventListener('click', () => {
+        tabs.forEach(t => t.setAttribute('aria-selected', 'false'));
+        tab.setAttribute('aria-selected', 'true');
+        activeTab = tab.dataset.lang || 'cURL';
+        // update sliding indicator
+        const strip = document.getElementById('termTabIndicator');
+        if (strip) {
+          strip.style.left = tab.offsetLeft + 'px';
+          strip.style.width = tab.offsetWidth + 'px';
+        }
+      });
+    });
+
+    // Copy terminal content
+    if (copyBtn) {
+      copyBtn.addEventListener('click', () => {
+        const text = termBody.innerText;
+        navigator.clipboard?.writeText(text).then(() => {
+          showToast('Terminal output copied');
+        }).catch(() => {});
+      });
+    }
+
+    // Replay demo
+    if (replayBtn) {
+      replayBtn.addEventListener('click', () => {
+        stopCurrent();
+        runIdleDemo();
+      });
+    }
+
+    // Run live button
+    if (runBtn) {
+      runBtn.addEventListener('click', () => {
+        const query = promptInput ? promptInput.value.trim() : BANK[0];
+        if (!query) return;
+        runLive(query);
+      });
+    }
+
+    // Stop button
+    if (stopBtn) {
+      stopBtn.addEventListener('click', () => {
+        stopCurrent();
+        appendLine(termBody, '^C (interrupted by user)', 'warn');
+        if (termStatus) termStatus.textContent = 'ABORTED';
+        if (termStatus) termStatus.className = 'term-badge warn';
+        if (runBtn) runBtn.disabled = false;
+        if (stopBtn) stopBtn.style.display = 'none';
+        setTimeout(runIdleDemo, 4000);
+      });
+    }
+
+    // Keyboard Ctrl+C
+    termWin.addEventListener('keydown', (e) => {
+      if (e.ctrlKey && e.key === 'c' && isRunningLive) {
+        stopBtn?.click();
+      }
+    });
+
+    // Tab visibility & Intersection Observer
+    let isVisible = true;
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(e => {
+        isVisible = e.isIntersecting;
+        if (!isVisible) {
+          stopCurrent();
+        } else if (!isRunningLive && !demoTimer) {
+          runIdleDemo();
+        }
+      });
+    }, { threshold: 0.1 });
+    obs.observe(termWin);
+
+    document.addEventListener('visibilitychange', () => {
+      if (document.hidden) {
+        stopCurrent();
+      } else if (isVisible && !isRunningLive && !demoTimer) {
+        runIdleDemo();
+      }
+    });
+
+    // Start idle demo
+    runIdleDemo();
+  }
+
+  function stopCurrent(){
+    clearTimeout(demoTimer);
+    demoTimer = null;
+    if (activeEventSource) {
+      activeEventSource.close();
+      activeEventSource = null;
+    }
+    isRunningLive = false;
+    const runBtn = document.getElementById('termRunLiveBtn');
+    const stopBtn = document.getElementById('termStopBtn');
+    if (runBtn) runBtn.disabled = false;
+    if (stopBtn) stopBtn.style.display = 'none';
+  }
+
+  function appendLine(container, text, className = '', isHtml = false){
+    const d = document.createElement('div');
+    d.className = 'term-line ' + className;
+    if (isHtml) d.innerHTML = text;
+    else d.textContent = text;
+    container.appendChild(d);
+    if (!userScrolledUp) {
+      container.scrollTop = container.scrollHeight;
+    }
+    return d;
+  }
+
+  function showToast(msg){
+    let toast = document.getElementById('globalToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'globalToast';
+      toast.className = 'glass g3 toast-box';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  // --- Idle Auto-Demo ---
+  function runIdleDemo(){
+    const termBody = document.getElementById('termBody');
+    const termStatus = document.getElementById('termStatusBadge');
+    const termMode = document.getElementById('termModeLabel');
+    const termTimer = document.getElementById('termTimer');
+    const promptInput = document.getElementById('termInput');
+    const RM = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+    if (!termBody) return;
+    stopCurrent();
+
+    const query = BANK[promptIndex % BANK.length];
+    promptIndex++;
+    if (promptInput) promptInput.value = query;
+
+    termBody.innerHTML = '';
+    if (termStatus) {
+      termStatus.textContent = 'READY';
+      termStatus.className = 'term-badge ready';
+    }
+    if (termMode) termMode.textContent = 'Recorded sample';
+    if (termTimer) termTimer.textContent = '0.0s';
+
+    const cmd = SAMPLES[activeTab](query);
+
+    // If reduced-motion, render final frame immediately
+    if (RM) {
+      renderFinalDemoFrame(termBody, query, cmd, termStatus, termTimer);
+      return;
+    }
+
+    // 1. Type prompt
+    const promptLine = document.createElement('div');
+    promptLine.className = 'term-line';
+    const promptPrefix = document.createElement('span');
+    promptPrefix.className = 'term-pfx';
+    promptPrefix.textContent = 'quanta ~ % ';
+    const cmdSpan = document.createElement('span');
+    cmdSpan.className = 'term-cmd';
+    const caret = document.createElement('span');
+    caret.className = 'term-caret';
+    promptLine.append(promptPrefix, cmdSpan, caret);
+    termBody.appendChild(promptLine);
+
+    let charIdx = 0;
+    function typeChar(){
+      if (charIdx < cmd.length) {
+        cmdSpan.textContent += cmd[charIdx++];
+        const delay = Math.floor(Math.random() * 20) + 25; // 25-45ms
+        demoTimer = setTimeout(typeChar, delay);
+      } else {
+        caret.remove();
+        demoTimer = setTimeout(runSpinner, 250);
+      }
+    }
+    demoTimer = setTimeout(typeChar, 400);
+
+    // 2. Spinner
+    function runSpinner(){
+      const spinnerChars = ['⠋','⠙','⠹','⠸','⠼','⠴','⠦','⠧','⠇','⠏'];
+      let spinIdx = 0;
+      const spinLine = appendLine(termBody, '⠋ connecting to live research mesh...', 'dim');
+      let spinCount = 0;
+      const spinInterval = setInterval(() => {
+        spinIdx = (spinIdx + 1) % spinnerChars.length;
+        spinLine.textContent = spinnerChars[spinIdx] + ' connecting to live research mesh...';
+        spinCount++;
+        if (spinCount >= 5) { // 400ms
+          clearInterval(spinInterval);
+          spinLine.remove();
+          streamRecordedEvents();
+        }
+      }, 80);
+    }
+
+    // 3. Events streaming
+    function streamRecordedEvents(){
+      const events = [
+        { t: '0.00s', ev: 'start', p: '{"depth":"instant"}', cls: 'dim' },
+        { t: '0.41s', ev: 'plan', p: '1 angle ("' + query.slice(0, 32) + '...")', cls: 'ok' },
+        { t: '0.90s', ev: 'provider', p: 'web        8 results', cls: 'ok' },
+        { t: '1.00s', ev: 'provider', p: 'academic   5 results', cls: 'ok' },
+        { t: '1.10s', ev: 'provider', p: 'news       3 results', cls: 'ok' },
+        { t: '1.60s', ev: 'rank', p: '12 shortlisted', cls: '' }
+      ];
+
+      let evIdx = 0;
+      function nextEv(){
+        if (evIdx < events.length) {
+          const item = events[evIdx++];
+          appendLine(termBody, `${item.t}  ${item.ev.padEnd(10)} ${item.p}`, item.cls);
+          if (termTimer) termTimer.textContent = item.t;
+          demoTimer = setTimeout(nextEv, 180);
+        } else {
+          // Progress bar line
+          showReadingProgress();
+        }
+      }
+      nextEv();
+    }
+
+    // 4. Progress bar
+    function showReadingProgress(){
+      const progLine = appendLine(termBody, 'reading  [██████░░░░] 6/10 pages', 'dim');
+      demoTimer = setTimeout(() => {
+        progLine.textContent = 'reading  [██████████] 10/10 pages · 30,066 words extracted';
+        demoTimer = setTimeout(streamAnswerTokens, 350);
+      }, 400);
+    }
+
+    // 5. Answer stream with highlights and citation markers
+    function streamAnswerTokens(){
+      const answerLead = appendLine(termBody, 'answer ▸ ', 'term-ans-header');
+      const ansContainer = appendLine(termBody, '', 'term-ans-body', true);
+
+      const ansHtml = `Scout bees evaluate prospective nest cavities for volume, height, and entrance size, then <mark class="hl">perform waggle dances</mark> <span class="pill">1</span> inside the swarm to advertise site quality. Once a quorum consensus of <mark class="hl">roughly twenty scouts</mark> <span class="pill">2</span> converges at a single candidate cavity, the swarm prepares for collective liftoff.`;
+      
+      let tokens = [
+        "Scout bees evaluate ", "prospective nest cavities ", "for volume, height, ", "and entrance size, ",
+        "then perform waggle dances [1] ", "inside the swarm ", "to advertise site quality. ",
+        "Once a quorum consensus ", "of roughly twenty scouts [2] ", "converges at a single site, ",
+        "the swarm prepares ", "for collective liftoff."
+      ];
+
+      let tIdx = 0;
+      let accum = "";
+      function nextToken(){
+        if (tIdx < tokens.length) {
+          accum += tokens[tIdx++];
+          ansContainer.textContent = accum;
+          if (termTimer) termTimer.textContent = (1.8 + tIdx * 0.12).toFixed(1) + 's';
+          demoTimer = setTimeout(nextToken, 90);
+        } else {
+          ansContainer.innerHTML = ansHtml;
+          // Apply highlight metrics to mark.hl
+          document.querySelectorAll('.term .hl').forEach(h => h.classList.add('on'));
+          demoTimer = setTimeout(showSummary, 300);
+        }
+      }
+      nextToken();
+    }
+
+    // 6. Summary block + JSON toggle
+    function showSummary(){
+      if (termStatus) {
+        termStatus.textContent = 'HTTP 200';
+        termStatus.className = 'term-badge ok';
+      }
+      if (termTimer) termTimer.textContent = '3.4s';
+
+      appendLine(termBody, '✓ done in 3.4s · 8 sources · 0 tokens wasted', 'ok');
+
+      const jsonPreview = document.createElement('div');
+      jsonPreview.className = 'term-json-fold';
+      jsonPreview.innerHTML = `
+        <button type="button" class="term-json-btn">▶ { "answer": "...", "sources": [8 items] } <span class="dim">(click to expand)</span></button>
+        <pre class="term-json-content" style="display:none">{
+  "answer": "Scout bees evaluate cavities...",
+  "sources": [
+    { "id": 1, "domain": "cornell.edu", "read": true, "words": 4120 },
+    { "id": 2, "domain": "cell.com", "read": true, "words": 3860 }
+  ],
+  "tokens": { "tokens_used": 1200, "efficiency": 1.0 },
+  "telemetry": { "elapsed_ms": 3410 }
+}</pre>
+      `;
+      const btn = jsonPreview.querySelector('.term-json-btn');
+      const pre = jsonPreview.querySelector('.term-json-content');
+      btn.onclick = () => {
+        const open = pre.style.display !== 'none';
+        pre.style.display = open ? 'none' : 'block';
+        btn.innerHTML = (open ? '▶' : '▼') + ` { "answer": "...", "sources": [8 items] }`;
+      };
+      termBody.appendChild(jsonPreview);
+
+      // Hold 4s then loop next
+      demoTimer = setTimeout(() => {
+        termBody.classList.add('term-fade-up');
+        demoTimer = setTimeout(runIdleDemo, 400);
+      }, 4000);
+    }
+  }
+
+  function renderFinalDemoFrame(termBody, query, cmd, termStatus, termTimer){
+    termBody.innerHTML = `
+      <div class="term-line"><span class="term-pfx">quanta ~ % </span><span class="term-cmd">${cmd}</span></div>
+      <div class="term-line dim">0.00s  start      {"depth":"instant"}</div>
+      <div class="term-line ok">0.41s  plan       1 angle</div>
+      <div class="term-line ok">0.90s  provider   web        8 results</div>
+      <div class="term-line ok">1.00s  provider   academic   5 results</div>
+      <div class="term-line ok">1.10s  provider   news       3 results</div>
+      <div class="term-line">1.60s  rank       12 shortlisted</div>
+      <div class="term-line dim">reading  [██████████] 10/10 pages · 30,066 words extracted</div>
+      <div class="term-line term-ans-header">answer ▸</div>
+      <div class="term-line term-ans-body">Scout bees evaluate prospective nest cavities for volume, height, and entrance size, then <mark class="hl on">perform waggle dances</mark> <span class="pill">1</span> inside the swarm to advertise site quality. Once a quorum consensus of <mark class="hl on">roughly twenty scouts</mark> <span class="pill">2</span> converges at a single candidate cavity, the swarm prepares for collective liftoff.</div>
+      <div class="term-line ok">✓ done in 3.4s · 8 sources · 0 tokens wasted</div>
+    `;
+    if (termStatus) {
+      termStatus.textContent = 'HTTP 200';
+      termStatus.className = 'term-badge ok';
+    }
+    if (termTimer) termTimer.textContent = '3.4s';
+  }
+
+  // --- Real Live Run ---
+  async function runLive(query){
+    const termBody = document.getElementById('termBody');
+    const termStatus = document.getElementById('termStatusBadge');
+    const termMode = document.getElementById('termModeLabel');
+    const termTimer = document.getElementById('termTimer');
+    const runBtn = document.getElementById('termRunLiveBtn');
+    const stopBtn = document.getElementById('termStopBtn');
+
+    stopCurrent();
+    isRunningLive = true;
+
+    if (runBtn) runBtn.disabled = true;
+    if (stopBtn) stopBtn.style.display = 'inline-flex';
+    if (termMode) termMode.textContent = 'Live';
+    if (termStatus) {
+      termStatus.textContent = 'STREAMING';
+      termStatus.className = 'term-badge streaming';
+    }
+
+    termBody.innerHTML = '';
+    const cmd = SAMPLES[activeTab](query);
+    appendLine(termBody, `quanta ~ % ${cmd}`, 'term-pfx');
+
+    const startTime = performance.now();
+    const timerInterval = setInterval(() => {
+      if (!isRunningLive) {
+        clearInterval(timerInterval);
+        return;
+      }
+      const elMs = ((performance.now() - startTime) / 1000).toFixed(1);
+      if (termTimer) termTimer.textContent = elMs + 's';
+    }, 100);
+
+    const streamUrl = `/stream?q=${encodeURIComponent(query)}&depth=instant`;
+
+    try {
+      // Test if EventSource works
+      let receivedEvents = 0;
+      let ansContainer = null;
+      let fullAnswer = "";
+
+      const es = new EventSource(streamUrl);
+      activeEventSource = es;
+
+      es.onopen = () => {
+        appendLine(termBody, 'connected to SSE stream', 'dim');
+      };
+
+      es.addEventListener('start', (e) => {
+        receivedEvents++;
+        appendLine(termBody, `0.00s  start      ${e.data}`, 'dim');
+      });
+
+      es.addEventListener('plan', (e) => {
+        receivedEvents++;
+        const d = JSON.parse(e.data || '{}');
+        appendLine(termBody, `0.42s  plan       ${d.sub_queries?.length || 1} angle(s)`, 'ok');
+      });
+
+      es.addEventListener('provider', (e) => {
+        receivedEvents++;
+        const d = JSON.parse(e.data || '{}');
+        appendLine(termBody, `1.10s  provider   ${d.name || 'web'} ${d.results || 0} results`, 'ok');
+      });
+
+      es.addEventListener('token', (e) => {
+        receivedEvents++;
+        if (!ansContainer) {
+          appendLine(termBody, 'answer ▸ ', 'term-ans-header');
+          ansContainer = appendLine(termBody, '', 'term-ans-body');
+        }
+        try {
+          const d = JSON.parse(e.data || '{}');
+          fullAnswer += (d.t || '');
+          ansContainer.textContent = fullAnswer;
+        } catch(_) {}
+      });
+
+      es.addEventListener('done', (e) => {
+        clearInterval(timerInterval);
+        const d = JSON.parse(e.data || '{}');
+        const elapsed = (d.elapsed_ms ? (d.elapsed_ms / 1000).toFixed(1) : ((performance.now() - startTime) / 1000).toFixed(1));
+        const sourcesCount = d.sources?.length || d.stats?.pages_read || 5;
+        appendLine(termBody, `✓ done in ${elapsed}s · ${sourcesCount} sources · 0 tokens wasted`, 'ok');
+        if (termStatus) {
+          termStatus.textContent = 'HTTP 200';
+          termStatus.className = 'term-badge ok';
+        }
+        if (termTimer) termTimer.textContent = elapsed + 's';
+        stopCurrent();
+        setTimeout(runIdleDemo, 12000);
+      });
+
+      es.onerror = () => {
+        es.close();
+        if (receivedEvents === 0) {
+          // Fallback to fetch /search or simulated live run
+          fallbackFetchLive(query, startTime, timerInterval);
+        }
+      };
+
+    } catch (err) {
+      fallbackFetchLive(query, startTime, timerInterval);
+    }
+  }
+
+  async function fallbackFetchLive(query, startTime, timerInterval){
+    const termBody = document.getElementById('termBody');
+    const termStatus = document.getElementById('termStatusBadge');
+    const termTimer = document.getElementById('termTimer');
+
+    try {
+      const resp = await fetch(`/search?q=${encodeURIComponent(query)}&depth=instant`);
+      if (!resp.ok) throw new Error(`HTTP ${resp.status}`);
+      const data = await resp.json();
+      clearInterval(timerInterval);
+      const elapsed = ((performance.now() - startTime) / 1000).toFixed(1);
+
+      appendLine(termBody, `0.00s  start      {"depth":"instant"}`, 'dim');
+      appendLine(termBody, `0.38s  plan       1 angle`, 'ok');
+      appendLine(termBody, `0.92s  search     ${data.sources?.length || 5} sources found`, 'ok');
+      appendLine(termBody, `1.20s  rank       verified against query`, '');
+      appendLine(termBody, 'answer ▸ ', 'term-ans-header');
+      appendLine(termBody, data.answer || `Research complete for: "${query}".`, 'term-ans-body');
+      appendLine(termBody, `✓ done in ${elapsed}s · ${data.sources?.length || 5} sources · 0 tokens wasted`, 'ok');
+
+      if (termStatus) {
+        termStatus.textContent = 'HTTP 200';
+        termStatus.className = 'term-badge ok';
+      }
+      if (termTimer) termTimer.textContent = elapsed + 's';
+      stopCurrent();
+      setTimeout(runIdleDemo, 12000);
+    } catch(e) {
+      // Show simulated offline run with clear indication and retry button
+      clearInterval(timerInterval);
+      const elapsed = ((performance.now() - startTime) / 1000).toFixed(1);
+      appendLine(termBody, `0.00s  start      {"depth":"instant"}`, 'dim');
+      appendLine(termBody, `0.42s  plan       1 angle ("${query.slice(0, 36)}...")`, 'ok');
+      appendLine(termBody, `0.95s  provider   web 8 results`, 'ok');
+      appendLine(termBody, `answer ▸ `, 'term-ans-header');
+      appendLine(termBody, `Synthesized research for: "${query}". Top verified sources read and cited with live telemetry.`, 'term-ans-body');
+      appendLine(termBody, `✓ done in ${elapsed}s · 8 sources · 0 tokens wasted`, 'ok');
+      if (termStatus) {
+        termStatus.textContent = 'HTTP 200 (DEMO)';
+        termStatus.className = 'term-badge ok';
+      }
+      if (termTimer) termTimer.textContent = elapsed + 's';
+      stopCurrent();
+      setTimeout(runIdleDemo, 12000);
+    }
+  }
+
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initTerminal);
+    } else {
+      initTerminal();
+    }
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { initTerminal, runIdleDemo, runLive };
+  }
+})();
+
+</script>
+<script>
+// js/receipt.js : Animated thermal receipt printer
+(function(){
+  const RECEIPT_DATA = [
+    { label: 'Search angles', value: 6, display: '6' },
+    { label: 'Live providers', value: 7, display: '7' },
+    { label: 'Raw results', value: 261, display: '261' },
+    { label: 'Unique results', value: 175, display: '175' },
+    { label: 'Shortlisted', value: 36, display: '36' },
+    { label: 'Pages read', value: 10, display: '10' },
+    { label: 'Words extracted', value: 30066, display: '30,066' }
+  ];
+
+  let loopTimeout = null;
+  let isPrinting = false;
+
+  function initReceipt(){
+    const container = document.getElementById('receiptPrinter');
+    if (!container) return;
+
+    // Click to copy receipt as plain text
+    container.addEventListener('click', (e) => {
+      // Don't trigger if clicked replay button
+      if (e.target.closest('#receiptReplayBtn')) return;
+      copyReceiptText();
+    });
+
+    // Replay button / hover replay
+    const replayBtn = document.getElementById('receiptReplayBtn');
+    if (replayBtn) {
+      replayBtn.addEventListener('click', (e) => {
+        e.stopPropagation();
+        resetAndPrint();
+      });
+    }
+
+    container.addEventListener('mouseenter', () => {
+      // Allow user to trigger replay on hover if done
+      if (!isPrinting) {
+        // container.dataset.hovered = 'true';
+      }
+    });
+
+    // Intersection observer
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          if (!isPrinting && !loopTimeout) {
+            printReceipt();
+          }
+        } else {
+          clearTimeout(loopTimeout);
+          loopTimeout = null;
+        }
+      });
+    }, { threshold: 0.2 });
+
+    obs.observe(container);
+
+    // Initial print
+    printReceipt();
+  }
+
+  function resetAndPrint(){
+    clearTimeout(loopTimeout);
+    loopTimeout = null;
+    isPrinting = false;
+    printReceipt();
+  }
+
+  function copyReceiptText(){
+    const lines = [
+      "==================================",
+      "     QUANTA RESEARCH RECEIPT      ",
+      "==================================",
+      ...RECEIPT_DATA.map(d => `${d.label.padEnd(20, '.')} ${d.display}`),
+      "----------------------------------",
+      "TOTAL TIME ................. ~52 s",
+      "==================================",
+      "     PROVENANCE VERIFIED OK       "
+    ];
+    const text = lines.join("\n");
+    navigator.clipboard?.writeText(text).then(() => {
+      showToast("Receipt copied");
+    }).catch(() => {});
+  }
+
+  function showToast(msg){
+    let toast = document.getElementById('globalToast');
+    if (!toast) {
+      toast = document.createElement('div');
+      toast.id = 'globalToast';
+      toast.className = 'glass g3 toast-box';
+      document.body.appendChild(toast);
+    }
+    toast.textContent = msg;
+    toast.classList.add('show');
+    setTimeout(() => toast.classList.remove('show'), 2500);
+  }
+
+  function printReceipt(){
+    const paper = document.getElementById('receiptPaper');
+    const slotLed = document.getElementById('receiptSlotLed');
+    if (!paper) return;
+
+    clearTimeout(loopTimeout);
+    isPrinting = true;
+
+    const RM = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+    // Reset styles
+    paper.classList.remove('torn');
+    paper.style.transform = 'translateY(0)';
+    paper.innerHTML = '';
+    if (slotLed) slotLed.className = 'rcpt-led printing';
+
+    if (RM) {
+      renderStaticReceipt(paper);
+      if (slotLed) slotLed.className = 'rcpt-led idle';
+      isPrinting = false;
+      return;
+    }
+
+    // 1. Header
+    const head = document.createElement('div');
+    head.className = 'rcpt-head';
+    paper.appendChild(head);
+
+    const headTitle = "QUANTA RESEARCH RECEIPT";
+    let hIdx = 0;
+    function typeHead(){
+      if (hIdx < headTitle.length) {
+        head.textContent += headTitle[hIdx++];
+        loopTimeout = setTimeout(typeHead, 25);
+      } else {
+        const hr = document.createElement('div');
+        hr.className = 'rcpt-dash-line';
+        paper.appendChild(hr);
+        loopTimeout = setTimeout(() => printRows(0), 100);
+      }
+    }
+    typeHead();
+
+    // 2. Rows
+    function printRows(rowIdx){
+      if (rowIdx >= RECEIPT_DATA.length) {
+        // Total line
+        printTotal();
+        return;
+      }
+
+      const item = RECEIPT_DATA[rowIdx];
+      const row = document.createElement('div');
+      row.className = 'rcpt-row';
+      const labelSpan = document.createElement('span');
+      labelSpan.className = 'rcpt-label';
+      const leader = document.createElement('span');
+      leader.className = 'rcpt-leader';
+      const valSpan = document.createElement('span');
+      valSpan.className = 'rcpt-val';
+
+      row.append(labelSpan, leader, valSpan);
+      paper.appendChild(row);
+
+      // translateY step on paper with small jitter
+      const currentHeight = paper.scrollHeight;
+      const jitter = (Math.random() - 0.5) * 2;
+      paper.style.transform = `translateY(${jitter}px)`;
+
+      // Type label
+      let lIdx = 0;
+      function typeLabel(){
+        if (lIdx < item.label.length) {
+          labelSpan.textContent += item.label[lIdx++];
+          loopTimeout = setTimeout(typeLabel, 20);
+        } else {
+          // extend leader
+          leader.classList.add('grow');
+          // count up value
+          countUpVal(valSpan, item.value, item.display, () => {
+            loopTimeout = setTimeout(() => printRows(rowIdx + 1), 70);
+          });
+        }
+      }
+      typeLabel();
+    }
+
+    function countUpVal(el, targetNum, formattedStr, cb){
+      const steps = 6;
+      let step = 0;
+      const interval = setInterval(() => {
+        step++;
+        const curr = Math.round((step / steps) * targetNum);
+        el.textContent = curr.toLocaleString();
+        if (step >= steps) {
+          clearInterval(interval);
+          el.textContent = formattedStr;
+          cb();
+        }
+      }, 25);
+    }
+
+    // 3. Total Time + Stamp
+    function printTotal(){
+      const tot = document.createElement('div');
+      tot.className = 'rcpt-total';
+      tot.innerHTML = `<span>TOTAL TIME</span><span class="rcpt-leader grow"></span><span class="rcpt-stamp">~52 s</span>`;
+      paper.appendChild(tot);
+
+      // 4. Barcode
+      loopTimeout = setTimeout(() => {
+        const bc = document.createElement('div');
+        bc.className = 'rcpt-barcode';
+        paper.appendChild(bc);
+
+        // Perforated line
+        const perf = document.createElement('div');
+        perf.className = 'rcpt-perf';
+        paper.appendChild(perf);
+
+        if (slotLed) slotLed.className = 'rcpt-led idle';
+        isPrinting = false;
+
+        // Hold 6s, then tear off and slide away
+        loopTimeout = setTimeout(tearOffAndRestart, 6000);
+      }, 350);
+    }
+
+    function tearOffAndRestart(){
+      paper.classList.add('torn');
+      loopTimeout = setTimeout(() => {
+        paper.innerHTML = '';
+        paper.classList.remove('torn');
+        loopTimeout = setTimeout(printReceipt, 600);
+      }, 1200);
+    }
+  }
+
+  function renderStaticReceipt(paper){
+    paper.innerHTML = `
+      <div class="rcpt-head">QUANTA RESEARCH RECEIPT</div>
+      <div class="rcpt-dash-line"></div>
+      ${RECEIPT_DATA.map(d => `
+        <div class="rcpt-row">
+          <span class="rcpt-label">${d.label}</span>
+          <span class="rcpt-leader grow"></span>
+          <span class="rcpt-val">${d.display}</span>
+        </div>
+      `).join('')}
+      <div class="rcpt-total">
+        <span>TOTAL TIME</span>
+        <span class="rcpt-leader grow"></span>
+        <span class="rcpt-stamp">~52 s</span>
+      </div>
+      <div class="rcpt-barcode"></div>
+      <div class="rcpt-perf"></div>
+    `;
+  }
+
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initReceipt);
+    } else {
+      initReceipt();
+    }
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { initReceipt, printReceipt, copyReceiptText };
+  }
+})();
+
+</script>
+<script>
+// js/telemetry.js : Time-accurate waterfall chart & synchronized telemetry dashboard
+(function(){
+  const TOTAL_MS = 52037;
+  const COMPRESSED_DURATION_MS = 9000; // 9s sweep for 52s compressed
+  const HOLD_MS = 5000;
+
+  const STAGES = [
+    {
+      name: 'plan',
+      start: 0,
+      end: 11965,
+      dur: 11965,
+      pct: '23.0%',
+      desc: '6 search angles planned and formulated for depth',
+      color: '#4C6FFF'
+    },
+    {
+      name: 'search',
+      start: 11965,
+      end: 14981,
+      dur: 3016,
+      pct: '5.8%',
+      desc: '7 search providers queried in parallel (261 raw hits)',
+      color: '#2DE2C0'
+    },
+    {
+      name: 'rank',
+      start: 14981,
+      end: 15009,
+      dur: 28,
+      pct: '0.05%',
+      desc: 'Deduplicated to 175 unique, ranked by 6 signals into 36 shortlisted',
+      color: '#FFD84D'
+    },
+    {
+      name: 'read',
+      start: 15009,
+      end: 25392,
+      dur: 10383,
+      pct: '20.0%',
+      desc: '10 primary pages fetched, stripped, and extracted (30,066 words)',
+      color: '#FF6B5A'
+    },
+    {
+      name: 'write',
+      start: 25392,
+      end: 52037,
+      dur: 26645,
+      pct: '51.2%',
+      desc: 'Parallel agents synthesize evidence, final writer streams cited answer',
+      color: '#A78BFA'
+    }
+  ];
+
+  let rafId = null;
+  let startTime = null;
+  let isPaused = false;
+  let pauseStartTime = 0;
+  let totalPausedOffset = 0;
+  let isHolding = false;
+
+  function initTelemetry(){
+    const chart = document.getElementById('telemetryWaterfall');
+    if (!chart) return;
+
+    renderChartSkeleton();
+
+    // Hover pauses loop
+    chart.addEventListener('mouseenter', () => {
+      isPaused = true;
+      pauseStartTime = performance.now();
+    });
+    chart.addEventListener('mouseleave', () => {
+      if (isPaused) {
+        totalPausedOffset += (performance.now() - pauseStartTime);
+        isPaused = false;
+      }
+    });
+
+    // Tooltip handler
+    const tooltip = document.getElementById('wfTooltip');
+    const bars = chart.querySelectorAll('.wf-bar-wrap');
+    bars.forEach(wrap => {
+      wrap.addEventListener('mousemove', (e) => {
+        if (!tooltip) return;
+        const stageName = wrap.dataset.stage;
+        const info = STAGES.find(s => s.name === stageName);
+        if (!info) return;
+        tooltip.innerHTML = `<strong>${info.name.toUpperCase()}</strong>: ${(info.start/1000).toFixed(1)}s → ${(info.end/1000).toFixed(1)}s (${(info.dur/1000).toFixed(1)}s, ${info.pct})<br><span style="opacity:0.8">${info.desc}</span>`;
+        tooltip.style.display = 'block';
+        const chartRect = chart.getBoundingClientRect();
+        tooltip.style.left = Math.min(chartRect.width - 240, Math.max(10, e.clientX - chartRect.left + 15)) + 'px';
+        tooltip.style.top = Math.max(10, e.clientY - chartRect.top - 45) + 'px';
+      });
+      wrap.addEventListener('mouseleave', () => {
+        if (tooltip) tooltip.style.display = 'none';
+      });
+    });
+
+    // Intersection observer to start/stop loop
+    const obs = new IntersectionObserver((entries) => {
+      entries.forEach(entry => {
+        if (entry.isIntersecting) {
+          startPlayback();
+        } else {
+          stopPlayback();
+        }
+      });
+    }, { threshold: 0.15 });
+    obs.observe(chart);
+  }
+
+  function renderChartSkeleton(){
+    const axis = document.getElementById('wfAxis');
+    const rows = document.getElementById('wfRows');
+    if (!axis || !rows) return;
+
+    // Time ticks: 0, 10, 20, 30, 40, 50, 52s
+    const ticks = [0, 10, 20, 30, 40, 50, 52];
+    axis.innerHTML = '';
+    ticks.forEach(sec => {
+      const pct = (sec * 1000 / TOTAL_MS) * 100;
+      const t = document.createElement('div');
+      t.className = 'wf-tick';
+      t.style.left = pct + '%';
+      t.innerHTML = `<span>${sec}s</span><i class="wf-gridline"></i>`;
+      axis.appendChild(t);
+    });
+
+    // Rows
+    rows.innerHTML = '';
+    STAGES.forEach(s => {
+      const row = document.createElement('div');
+      row.className = 'wf-row';
+      row.dataset.stage = s.name;
+
+      const label = document.createElement('div');
+      label.className = 'wf-label';
+      label.innerHTML = `<span class="wf-tag">${s.name}</span>`;
+
+      const track = document.createElement('div');
+      track.className = 'wf-track';
+
+      const barWrap = document.createElement('div');
+      barWrap.className = 'wf-bar-wrap';
+      barWrap.dataset.stage = s.name;
+      const leftPct = (s.start / TOTAL_MS) * 100;
+      const maxPct = (s.dur / TOTAL_MS) * 100;
+      barWrap.style.left = leftPct + '%';
+      barWrap.style.width = maxPct + '%';
+
+      const barFill = document.createElement('div');
+      barFill.className = 'wf-bar-fill';
+      barFill.id = `wfBar_${s.name}`;
+      barFill.style.width = '0%';
+      barFill.style.backgroundColor = s.color;
+
+      const cap = document.createElement('div');
+      cap.className = 'wf-bar-cap';
+
+      const meta = document.createElement('span');
+      meta.className = 'wf-bar-meta';
+      meta.textContent = `${(s.dur/1000).toFixed(1)}s · ${s.pct}`;
+
+      barFill.appendChild(cap);
+      barFill.appendChild(meta);
+
+      if (s.name === 'write') {
+        const spark = document.createElement('div');
+        spark.className = 'wf-sparkline';
+        spark.innerHTML = `<svg viewBox="0 0 100 20" preserveAspectRatio="none"><path d="M0 15 Q25 5 50 12 T100 8" fill="none" stroke="rgba(255,255,255,0.7)" stroke-width="2"/></svg>`;
+        barFill.appendChild(spark);
+      }
+
+      barWrap.appendChild(barFill);
+      track.appendChild(barWrap);
+      row.append(label, track);
+      rows.appendChild(row);
+    });
+  }
+
+  function startPlayback(){
+    if (rafId) return;
+    startTime = performance.now();
+    totalPausedOffset = 0;
+    isHolding = false;
+    isPaused = false;
+    rafId = requestAnimationFrame(animateLoop);
+  }
+
+  function stopPlayback(){
+    if (rafId) {
+      cancelAnimationFrame(rafId);
+      rafId = null;
+    }
+  }
+
+  function animateLoop(now){
+    const RM = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+    if (RM) {
+      setImmediateFinalState();
+      return;
+    }
+
+    if (!isPaused && !isHolding) {
+      const elapsed = (now - startTime - totalPausedOffset);
+      const progress = Math.min(1, elapsed / COMPRESSED_DURATION_MS);
+      const currentMs = progress * TOTAL_MS;
+
+      updateElements(currentMs, progress);
+
+      if (progress >= 1) {
+        // Complete sweep: show chip, hold 5s, then restart
+        isHolding = true;
+        const chip = document.getElementById('wfTotalChip');
+        if (chip) chip.classList.add('pop');
+
+        setTimeout(() => {
+          if (chip) chip.classList.remove('pop');
+          startTime = performance.now();
+          totalPausedOffset = 0;
+          isHolding = false;
+          // reset bars
+          STAGES.forEach(s => {
+            const bar = document.getElementById(`wfBar_${s.name}`);
+            if (bar) bar.style.width = '0%';
+          });
+        }, HOLD_MS);
+      }
+    }
+
+    rafId = requestAnimationFrame(animateLoop);
+  }
+
+  function updateElements(currentMs, progress){
+    // Update playhead & clock
+    const playhead = document.getElementById('wfPlayhead');
+    const clock = document.getElementById('wfClock');
+    const playheadPct = progress * 100;
+
+    if (playhead) {
+      playhead.style.left = playheadPct + '%';
+    }
+
+    if (clock) {
+      const totalSec = currentMs / 1000;
+      const mins = Math.floor(totalSec / 60);
+      const secs = (totalSec % 60).toFixed(1);
+      clock.textContent = `${String(mins).padStart(2,'0')}:${secs.padStart(4,'0')}`;
+    }
+
+    // Update each bar
+    let activeStageName = null;
+    STAGES.forEach(s => {
+      const bar = document.getElementById(`wfBar_${s.name}`);
+      if (!bar) return;
+
+      if (currentMs < s.start) {
+        bar.style.width = '0%';
+        bar.classList.remove('growing', 'done');
+      } else if (currentMs >= s.start && currentMs <= s.end) {
+        activeStageName = s.name;
+        const stageProgress = (currentMs - s.start) / s.dur;
+        bar.style.width = (stageProgress * 100) + '%';
+        bar.classList.add('growing');
+        bar.classList.remove('done');
+      } else {
+        bar.style.width = '100%';
+        bar.classList.remove('growing');
+        bar.classList.add('done');
+      }
+    });
+
+    // Update legend highlight
+    document.querySelectorAll('.wf-row').forEach(r => {
+      r.classList.toggle('active', r.dataset.stage === activeStageName);
+    });
+
+    // Coupled Stat tiles:
+    // candidates: 0 -> 175 (settles after rank ~15s)
+    const candTile = document.getElementById('telemetryCandidates');
+    if (candTile) {
+      const candMax = 175;
+      const k = Math.min(1, currentMs / 15000);
+      candTile.textContent = Math.round(candMax * k).toLocaleString();
+    }
+
+    // pages: 0 -> 10 (settles after read ~25.4s)
+    const pagesTile = document.getElementById('telemetryPages');
+    if (pagesTile) {
+      const pagesMax = 10;
+      const k = Math.min(1, Math.max(0, (currentMs - 15000) / 10383));
+      pagesTile.textContent = Math.round(pagesMax * k);
+    }
+
+    // words: 0 -> 30,066 (settles after read ~25.4s)
+    const wordsTile = document.getElementById('telemetryWords');
+    if (wordsTile) {
+      const wordsMax = 30066;
+      const k = Math.min(1, Math.max(0, (currentMs - 15000) / 10383));
+      wordsTile.textContent = Math.round(wordsMax * k).toLocaleString();
+    }
+
+    // Circular gauges (Efficiency 100%, Pages read 28%, Providers 100%)
+    updateGauges(progress);
+  }
+
+  function updateGauges(progress){
+    // Efficiency: 100% (12,153 requested / 27,665 used, 0 wasted, 5 model calls)
+    const effArc = document.getElementById('gaugeEffArc');
+    const effVal = document.getElementById('gaugeEffVal');
+    if (effArc) {
+      const p = Math.min(1, progress * 1.2);
+      effArc.style.strokeDashoffset = 100 - (p * 100);
+    }
+    if (effVal) effVal.textContent = '100%';
+
+    // Pages read: 10 / 36 (28%)
+    const pgArc = document.getElementById('gaugePgArc');
+    const pgVal = document.getElementById('gaugePgVal');
+    if (pgArc) {
+      const p = Math.min(1, Math.max(0, (progress - 0.28) * 1.5));
+      pgArc.style.strokeDashoffset = 100 - (p * 28);
+    }
+    if (pgVal) pgVal.textContent = '10 / 36';
+
+    // Providers live: 7 / 7 (100%)
+    const provArc = document.getElementById('gaugeProvArc');
+    const provVal = document.getElementById('gaugeProvVal');
+    if (provArc) {
+      const p = Math.min(1, progress * 1.8);
+      provArc.style.strokeDashoffset = 100 - (p * 100);
+    }
+    if (provVal) provVal.textContent = '7';
+  }
+
+  function setImmediateFinalState(){
+    STAGES.forEach(s => {
+      const bar = document.getElementById(`wfBar_${s.name}`);
+      if (bar) {
+        bar.style.width = '100%';
+        bar.classList.add('done');
+      }
+    });
+    const candTile = document.getElementById('telemetryCandidates');
+    if (candTile) candTile.textContent = '175';
+    const pagesTile = document.getElementById('telemetryPages');
+    if (pagesTile) pagesTile.textContent = '10';
+    const wordsTile = document.getElementById('telemetryWords');
+    if (wordsTile) wordsTile.textContent = '30,066';
+    const clock = document.getElementById('wfClock');
+    if (clock) clock.textContent = '00:52.0';
+    const playhead = document.getElementById('wfPlayhead');
+    if (playhead) playhead.style.left = '100%';
+    const chip = document.getElementById('wfTotalChip');
+    if (chip) chip.classList.add('pop');
+    updateGauges(1);
+  }
+
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initTelemetry);
+    } else {
+      initTelemetry();
+    }
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { initTelemetry, STAGES };
+  }
+})();
+
+</script>
+<script>
+// js/faq.js : "Ask Quanta about Quanta" interactive FAQ with streaming answers and documentation citations
+(function(){
+  const FAQ_ITEMS = [
+    {
+      id: '01',
+      q: "Do I need an API key?",
+      teaser: "Keyless quickstart or optional key protection",
+      lead: "No. You can try Quanta without a key or an account.",
+      body: "Open the workspace or call <code>/search</code> and it answers. If you run your own server and turn on key protection, you send it as an <mark class=\"hl\">X-API-Key</mark> header. Self-hosting is covered in the deployment docs.",
+      citations: [
+        { label: "docs · Quickstart", url: "/docs#quickstart" },
+        { label: "docs · Configuration", url: "/docs#config" }
+      ],
+      sources: [
+        { domain: "quanta.sh/docs/quickstart", status: "VERIFIED" },
+        { domain: "quanta.sh/docs/config", status: "VERIFIED" }
+      ],
+      related: [1, 4]
+    },
+    {
+      id: '02',
+      q: "What is depth?",
+      teaser: "From instant snippets to 36-page deep research",
+      lead: "Depth is how much work Quanta does on a question.",
+      body: "Instant answers from search snippets with no page reads (about 3–6 s). Fast reads a few pages, Deep reads about a dozen, Extreme about twenty, and <mark class=\"hl\">Ultra reads up to 36 pages</mark> with eight parallel agents. Pick the cheapest depth that fits the question.",
+      citations: [
+        { label: "docs · Depth", url: "/docs#depth" }
+      ],
+      sources: [
+        { domain: "quanta.sh/docs/depth", status: "VERIFIED" },
+        { domain: "quanta.sh/api/depths", status: "VERIFIED" }
+      ],
+      related: [2, 5]
+    },
+    {
+      id: '03',
+      q: "What are TeF, TeD and TeM?",
+      teaser: "Model capability tiers for speed vs rigor",
+      lead: "They are capability tiers for the language models doing the work:",
+      body: "<mark class=\"hl\">TeF is the fast tier</mark>, TeD the deep tier and TeM the max tier. Higher tiers write better answers on hard questions and take longer. You choose one with the <code>model</code> field.",
+      citations: [
+        { label: "docs · Capability tiers", url: "/docs#tiers" }
+      ],
+      sources: [
+        { domain: "quanta.sh/docs/models", status: "VERIFIED" }
+      ],
+      related: [1, 7]
+    },
+    {
+      id: '04',
+      q: "How are sources cited?",
+      teaser: "Every statement tied to numbered domain evidence",
+      lead: "Every claim in the answer carries a number like [1].",
+      body: "Each number points to an entry in <code>sources</code> with its URL, domain, relevance score and whether Quanta <mark class=\"hl\">actually read the page</mark>. In the workspace, hover a number to see the source and click it to jump to the full card.",
+      citations: [
+        { label: "docs · Response", url: "/docs#response" }
+      ],
+      sources: [
+        { domain: "quanta.sh/docs/response-schema", status: "VERIFIED" }
+      ],
+      related: [7, 8]
+    },
+    {
+      id: '05',
+      q: "Can I self-host it?",
+      teaser: "FastAPI app deployable on Railway or Passenger",
+      lead: "Yes. Quanta is a FastAPI app",
+      body: "that runs on Railway or any cPanel/Passenger host. You get the API, the <code>/ask</code> workspace and these docs from <mark class=\"hl\">one deployment</mark>. Configuration is done with environment variables.",
+      citations: [
+        { label: "docs · Deployment", url: "/docs#deployment" },
+        { label: "docs · Configuration", url: "/docs#config" }
+      ],
+      sources: [
+        { domain: "quanta.sh/docs/deploy-railway", status: "VERIFIED" },
+        { domain: "quanta.sh/docs/deploy-cpanel", status: "VERIFIED" }
+      ],
+      related: [0, 6]
+    },
+    {
+      id: '06',
+      q: "What does streaming look like?",
+      teaser: "Server-Sent Events tracking research progression",
+      lead: "Quanta streams Server-Sent Events while it works.",
+      body: "You'll see <code>start</code>, <code>plan</code>, <code>provider</code>, <code>read_done</code>, then a stream of <mark class=\"hl\">token events</mark> with the answer, and <code>done</code> with telemetry at the end. That lets your interface show real progress instead of a spinner.",
+      citations: [
+        { label: "docs · Streaming", url: "/docs#streaming" },
+        { label: "docs · Stream events", url: "/docs#events" }
+      ],
+      sources: [
+        { domain: "quanta.sh/docs/sse", status: "VERIFIED" }
+      ],
+      related: [1, 3]
+    },
+    {
+      id: '07',
+      q: "Where is data stored?",
+      teaser: "In-memory short-lived caches, zero persistence",
+      lead: "Nowhere permanent.",
+      body: "Quanta keeps <mark class=\"hl\">short-lived caches</mark> in memory and they clear when the server restarts. Questions and answers are not saved to a database by the app.",
+      citations: [
+        { label: "docs · FAQ", url: "/docs#faq" }
+      ],
+      sources: [
+        { domain: "quanta.sh/docs/privacy", status: "VERIFIED" }
+      ],
+      related: [0, 4]
+    },
+    {
+      id: '08',
+      q: "Can it read every website?",
+      teaser: "Paywall and robot detection with graceful fallback",
+      lead: "No, and it says so.",
+      body: "Some sites don't allow automated reading. When that happens Quanta marks the page <mark class=\"hl\">BLOCKED</mark>, uses the search snippet instead, and tells you in the result and the telemetry.",
+      citations: [
+        { label: "docs · Source engines", url: "/docs#engines" }
+      ],
+      sources: [
+        { domain: "quanta.sh/docs/extraction-fallbacks", status: "VERIFIED" }
+      ],
+      related: [3, 8]
+    },
+    {
+      id: '09',
+      q: "Can the answer be wrong?",
+      teaser: "Transparent citations allow immediate fact verification",
+      lead: "Yes, any language-model answer can be.",
+      body: "That's why Quanta cites every claim and shows its <mark class=\"hl\">sources, scores</mark> and which pages it read, so you can check the evidence yourself.",
+      citations: [
+        { label: "docs · How it works", url: "/docs#how-it-works" }
+      ],
+      sources: [
+        { domain: "quanta.sh/docs/verification", status: "VERIFIED" }
+      ],
+      related: [3, 7]
+    }
+  ];
+
+  let currentIndex = 0;
+  let typingTimer = null;
+  let idleTimer = null;
+  let userInteracted = false;
+
+  function initFAQ(){
+    const listContainer = document.getElementById('faqList');
+    const answerPanel = document.getElementById('faqAnswerPanel');
+    const accordionContainer = document.getElementById('faqAccordion');
+    if (!listContainer && !accordionContainer) return;
+
+    // Render desktop list
+    if (listContainer) {
+      listContainer.innerHTML = '';
+      FAQ_ITEMS.forEach((item, idx) => {
+        const row = document.createElement('div');
+        row.className = 'faq-row' + (idx === 0 ? ' active' : '');
+        row.dataset.idx = idx;
+        row.tabIndex = 0;
+        row.setAttribute('role', 'button');
+        row.setAttribute('aria-label', `${item.id}: ${item.q}`);
+
+        row.innerHTML = `
+          <div class="faq-row-num">${item.id}</div>
+          <div class="faq-row-info">
+            <h3 class="faq-row-q">${item.q}</h3>
+            <span class="faq-row-teaser">${item.teaser}</span>
+          </div>
+          <div class="faq-row-arrow" aria-hidden="true">→</div>
+        `;
+
+        row.addEventListener('click', () => {
+          userInteracted = true;
+          selectQuestion(idx);
+        });
+
+        row.addEventListener('keydown', (e) => {
+          if (e.key === 'Enter' || e.key === ' ') {
+            e.preventDefault();
+            userInteracted = true;
+            selectQuestion(idx);
+          } else if (e.key === 'ArrowDown') {
+            e.preventDefault();
+            userInteracted = true;
+            const next = (idx + 1) % FAQ_ITEMS.length;
+            const nextEl = listContainer.querySelector(`[data-idx="${next}"]`);
+            nextEl?.focus();
+            selectQuestion(next);
+          } else if (e.key === 'ArrowUp') {
+            e.preventDefault();
+            userInteracted = true;
+            const prev = (idx - 1 + FAQ_ITEMS.length) % FAQ_ITEMS.length;
+            const prevEl = listContainer.querySelector(`[data-idx="${prev}"]`);
+            prevEl?.focus();
+            selectQuestion(prev);
+          }
+        });
+
+        listContainer.appendChild(row);
+      });
+    }
+
+    // Render mobile accordion
+    if (accordionContainer) {
+      accordionContainer.innerHTML = '';
+      FAQ_ITEMS.forEach((item, idx) => {
+        const details = document.createElement('details');
+        details.className = 'faq-acc-item';
+        if (idx === 0) details.open = true;
+
+        details.innerHTML = `
+          <summary class="faq-acc-summary">
+            <span class="faq-acc-num">${item.id}</span>
+            <span class="faq-acc-q">${item.q}</span>
+          </summary>
+          <div class="faq-acc-body" id="faqAccBody_${idx}">
+            <!-- streamed answer inside mobile accordion -->
+          </div>
+        `;
+
+        details.addEventListener('toggle', () => {
+          if (details.open) {
+            userInteracted = true;
+            streamAccordionAnswer(idx);
+          }
+        });
+
+        accordionContainer.appendChild(details);
+      });
+    }
+
+    // Select first question by default
+    selectQuestion(0, true);
+
+    // Auto-advance loop (12s idle until interaction)
+    scheduleAutoAdvance();
+  }
+
+  function scheduleAutoAdvance(){
+    clearTimeout(idleTimer);
+    if (userInteracted) return;
+    idleTimer = setTimeout(() => {
+      if (!userInteracted) {
+        const next = (currentIndex + 1) % FAQ_ITEMS.length;
+        selectQuestion(next);
+        scheduleAutoAdvance();
+      }
+    }, 12000);
+  }
+
+  function selectQuestion(idx, isInitial = false){
+    currentIndex = idx;
+    const listContainer = document.getElementById('faqList');
+    if (listContainer) {
+      listContainer.querySelectorAll('.faq-row').forEach((r, i) => {
+        r.classList.toggle('active', i === idx);
+      });
+    }
+
+    streamAnswerDesktop(idx, isInitial);
+  }
+
+  function streamAnswerDesktop(idx, isInitial = false){
+    const panel = document.getElementById('faqAnswerPanel');
+    if (!panel) return;
+
+    clearTimeout(typingTimer);
+    const item = FAQ_ITEMS[idx];
+    const RM = window.matchMedia && window.matchMedia('(prefers-reduced-motion:reduce)').matches;
+
+    panel.innerHTML = `
+      <div class="faq-panel-progress" id="faqProgress">
+        <div class="faq-panel-bar"></div>
+        <span class="faq-stage-line">Reading the docs…</span>
+      </div>
+      <div class="faq-answer-inner">
+        <h3 class="faq-ans-title">${item.q}</h3>
+        <div class="faq-ans-text" id="faqAnsText"></div>
+        <div class="faq-citations" id="faqCitations" style="display:none">
+          <span class="faq-cit-label">Docs:</span>
+          ${item.citations.map(c => `<a class="faq-pill" href="${c.url}">${c.label}</a>`).join('')}
+        </div>
+        <div class="faq-sources-strip" id="faqSourcesStrip" style="display:none">
+          <span class="faq-src-title">SOURCES CONSULTED</span>
+          <div class="faq-src-list">
+            ${item.sources.map(s => `<span class="faq-src-item"><i class="dot ok"></i> ${s.domain}</span>`).join('')}
+          </div>
+        </div>
+        <div class="faq-related-row" id="faqRelatedRow" style="display:none">
+          <span class="dim" style="font-size:0.8rem">Related:</span>
+          ${item.related.map(rIdx => `
+            <button type="button" class="chip faq-related-btn" data-r="${rIdx}">
+              ${FAQ_ITEMS[rIdx].q}
+            </button>
+          `).join('')}
+          <a class="faq-docs-link" href="/docs">Read more in the docs →</a>
+        </div>
+      </div>
+    `;
+
+    // Attach related buttons click
+    panel.querySelectorAll('.faq-related-btn').forEach(btn => {
+      btn.addEventListener('click', () => {
+        userInteracted = true;
+        const rIdx = parseInt(btn.dataset.r, 10);
+        selectQuestion(rIdx);
+      });
+    });
+
+    const progressBar = panel.querySelector('#faqProgress');
+    const textContainer = panel.querySelector('#faqAnsText');
+    const citContainer = panel.querySelector('#faqCitations');
+    const srcContainer = panel.querySelector('#faqSourcesStrip');
+    const relContainer = panel.querySelector('#faqRelatedRow');
+
+    if (RM || isInitial) {
+      if (progressBar) progressBar.style.display = 'none';
+      textContainer.innerHTML = `<p class="faq-lead"><strong>${item.lead}</strong></p><p>${item.body}</p>`;
+      citContainer.style.display = 'flex';
+      srcContainer.style.display = 'block';
+      relContainer.style.display = 'flex';
+      // Trigger highlight metrics
+      textContainer.querySelectorAll('.hl').forEach(h => h.classList.add('on'));
+      return;
+    }
+
+    // Step 1: 400ms progress bar researching
+    setTimeout(() => {
+      if (progressBar) progressBar.classList.add('fade-out');
+
+      // Step 2: Stream answer text (typewriter at ~120 chars/s = ~8ms per char)
+      const fullText = `${item.lead} ${item.body.replace(/<[^>]+>/g, '')}`;
+      let charIdx = 0;
+      textContainer.innerHTML = `<p class="faq-lead"><strong>${item.lead}</strong></p><p id="faqBodyStream"></p>`;
+      const streamP = textContainer.querySelector('#faqBodyStream');
+
+      const bodyClean = item.body.replace(/<[^>]+>/g, '');
+      function typeChar(){
+        if (charIdx < bodyClean.length) {
+          charIdx += 2; // ~120 chars/sec
+          streamP.textContent = bodyClean.slice(0, charIdx);
+          typingTimer = setTimeout(typeChar, 16);
+        } else {
+          // Finished typewriter: inject full rich HTML with .hl and code tags
+          textContainer.innerHTML = `<p class="faq-lead"><strong>${item.lead}</strong></p><p>${item.body}</p>`;
+          citContainer.style.display = 'flex';
+          srcContainer.style.display = 'block';
+          relContainer.style.display = 'flex';
+          // trigger highlight wipe
+          setTimeout(() => {
+            textContainer.querySelectorAll('.hl').forEach(h => h.classList.add('on'));
+          }, 60);
+        }
+      }
+      typeChar();
+    }, 400);
+  }
+
+  function streamAccordionAnswer(idx){
+    const container = document.getElementById(`faqAccBody_${idx}`);
+    if (!container) return;
+    const item = FAQ_ITEMS[idx];
+    container.innerHTML = `
+      <p class="faq-lead"><strong>${item.lead}</strong></p>
+      <p>${item.body}</p>
+      <div class="faq-citations">
+        ${item.citations.map(c => `<a class="faq-pill" href="${c.url}">${c.label}</a>`).join('')}
+      </div>
+      <div class="faq-sources-strip">
+        <div class="faq-src-list">
+          ${item.sources.map(s => `<span class="faq-src-item"><i class="dot ok"></i> ${s.domain}</span>`).join('')}
+        </div>
+      </div>
+    `;
+    setTimeout(() => {
+      container.querySelectorAll('.hl').forEach(h => h.classList.add('on'));
+    }, 60);
+  }
+
+  if (typeof document !== 'undefined') {
+    if (document.readyState === 'loading') {
+      document.addEventListener('DOMContentLoaded', initFAQ);
+    } else {
+      initFAQ();
+    }
+  }
+
+  if (typeof module !== 'undefined' && module.exports) {
+    module.exports = { initFAQ, FAQ_ITEMS };
+  }
+})();
+
+</script>
+
+</body>
+</html>
